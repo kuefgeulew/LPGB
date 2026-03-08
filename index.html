@@ -1,0 +1,1854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAFS — Monetary and Financial System</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0d1117; --bg2:#161b22; --bg3:#1c2333;
+  --border:rgba(255,255,255,0.07);
+  --gold:#d4a843; --gold2:#f0c060; --cream:#f0e8d5;
+  --muted:#8892a0; --text:#cdd3dd;
+  --a:#58c4f5; --b:#7ee8a2; --c:#f97c6e;
+  --d:#c678dd; --e:#f5a623; --f:#56b6c2;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,serif;font-size:17px;line-height:1.7;overflow-x:hidden}
+
+/* HERO */
+.hero{position:relative;min-height:260px;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:55px 24px 45px;overflow:hidden;background:linear-gradient(135deg,#0d1117 0%,#1a2035 50%,#0d1117 100%)}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(212,168,67,.18) 0%,transparent 70%);pointer-events:none}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(212,168,67,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(212,168,67,.04) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+.hero-badge{display:inline-block;border:1px solid var(--gold);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;padding:4px 14px;border-radius:3px;margin-bottom:16px;animation:fadeUp .6s ease both}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.6rem);font-weight:900;color:var(--cream);letter-spacing:-1px;line-height:1.1;animation:fadeUp .7s ease .1s both}
+.hero h1 span{color:var(--gold)}
+.hero-sub{color:var(--muted);font-size:1rem;margin-top:10px;animation:fadeUp .7s ease .2s both}
+.hero-tags{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:18px;animation:fadeUp .7s ease .3s both}
+.hero-tags span{background:rgba(255,255,255,.05);border:1px solid var(--border);font-size:11px;padding:3px 11px;border-radius:20px;color:var(--muted)}
+
+/* NAV */
+.toc{position:sticky;top:0;z-index:100;background:rgba(13,17,23,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 20px;overflow-x:auto;scrollbar-width:none}
+.toc::-webkit-scrollbar{display:none}
+.toc-inner{display:flex;gap:2px;align-items:center;min-width:max-content;padding:7px 0}
+.toc-btn{background:none;border:none;font-family:'Crimson Pro',serif;font-size:13px;color:var(--muted);padding:5px 12px;border-radius:6px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.toc-btn:hover,.toc-btn.active{background:rgba(212,168,67,.12);color:var(--gold)}
+.toc-sep{width:1px;height:14px;background:var(--border);flex-shrink:0;margin:0 2px}
+
+/* SEARCH */
+.search-wrap{position:sticky;top:44px;z-index:99;background:rgba(13,17,23,.96);backdrop-filter:blur(12px);padding:8px 20px;border-bottom:1px solid var(--border)}
+.search-inner{max-width:1060px;margin:0 auto}
+.search-box{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:7px 14px}
+.search-box input{background:none;border:none;outline:none;color:var(--text);font-family:'Crimson Pro',serif;font-size:15px;width:100%}
+.search-box input::placeholder{color:var(--muted)}
+#resultCount{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);white-space:nowrap}
+mark{background:rgba(212,168,67,.35);color:var(--gold2);border-radius:2px;padding:0 2px}
+
+/* LAYOUT */
+.container{max-width:1060px;margin:0 auto;padding:0 20px 80px}
+.module{margin-top:60px;animation:fadeUp .5s ease both}
+.module-header{display:flex;align-items:center;gap:14px;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.module-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.module-title{font-family:'Playfair Display',serif;font-size:1.75rem;font-weight:700;color:var(--cream)}
+.module-title small{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);font-style:normal;margin-bottom:2px;font-weight:400}
+
+/* SECTION HEADING */
+.section-h{font-family:'Playfair Display',serif;font-size:1.25rem;color:var(--cream);margin:26px 0 12px;display:flex;align-items:center;gap:10px}
+.section-h::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+
+/* CARDS */
+.cards{display:grid;gap:16px}
+.cards-2{grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+.cards-3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.cards-4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 22px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.card.gold::before{background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.card.blue::before{background:linear-gradient(90deg,#58c4f5,#7b9ef8)}
+.card.green::before{background:linear-gradient(90deg,#7ee8a2,#4ecf82)}
+.card.red::before{background:linear-gradient(90deg,#f97c6e,#e85c75)}
+.card.purple::before{background:linear-gradient(90deg,#c678dd,#9b59b6)}
+.card.teal::before{background:linear-gradient(90deg,#56b6c2,#3ca0ad)}
+.card.orange::before{background:linear-gradient(90deg,#f5a623,#e8842a)}
+.card-icon{font-size:26px;margin-bottom:10px;display:block}
+.card h3{font-family:'Playfair Display',serif;font-size:1.08rem;color:var(--cream);margin-bottom:8px;font-weight:700}
+.card p,.card li{font-size:15px;color:var(--text);line-height:1.65}
+.card ul{padding-left:18px}
+.card ul li{margin-bottom:3px}
+
+/* DEF BLOCK */
+.def-block{background:var(--bg3);border-left:4px solid var(--gold);border-radius:0 10px 10px 0;padding:14px 18px;margin:14px 0}
+.def-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:5px}
+.def-block p{font-size:15.5px;color:var(--text)}
+
+/* EXAMPLE BLOCK */
+.example{background:rgba(88,196,245,.06);border:1px solid rgba(88,196,245,.2);border-radius:10px;padding:12px 16px;margin:10px 0}
+.ex-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--a);margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.ex-label::before{content:'▶';font-size:8px}
+.example p{font-size:15px;color:var(--text)}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border);margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+thead tr{background:var(--bg3)}
+thead th{padding:11px 15px;text-align:left;color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;border-bottom:1px solid var(--border)}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(255,255,255,.03)}
+tbody td{padding:10px 15px;vertical-align:top;color:var(--text)}
+tbody td:first-child{color:var(--cream);font-weight:600}
+
+/* BADGE */
+.badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:2px 9px;border-radius:20px;font-weight:600;letter-spacing:.5px}
+.badge-gold{background:rgba(212,168,67,.15);color:var(--gold);border:1px solid rgba(212,168,67,.3)}
+.badge-blue{background:rgba(88,196,245,.12);color:var(--a);border:1px solid rgba(88,196,245,.25)}
+.badge-green{background:rgba(126,232,162,.12);color:var(--b);border:1px solid rgba(126,232,162,.25)}
+.badge-red{background:rgba(249,124,110,.12);color:var(--c);border:1px solid rgba(249,124,110,.25)}
+.badge-purple{background:rgba(198,120,221,.12);color:var(--d);border:1px solid rgba(198,120,221,.25)}
+
+/* HIGHLIGHT */
+.highlight{background:linear-gradient(135deg,rgba(212,168,67,.08),rgba(212,168,67,.04));border:1px solid rgba(212,168,67,.2);border-radius:12px;padding:16px 20px;margin:14px 0}
+.highlight h4{font-family:'Playfair Display',serif;color:var(--gold);font-size:.95rem;margin-bottom:7px}
+.highlight p,.highlight li{font-size:15px;color:var(--text)}
+.highlight ul{padding-left:18px}
+.highlight ul li{margin-bottom:3px}
+
+/* FLOW */
+.flow{display:flex;gap:0;align-items:stretch;margin:14px 0;flex-wrap:wrap}
+.flow-step{flex:1;min-width:120px;background:var(--bg3);border:1px solid var(--border);padding:14px 12px;text-align:center;position:relative}
+.flow-step:first-child{border-radius:10px 0 0 10px}
+.flow-step:last-child{border-radius:0 10px 10px 0}
+.flow-step+.flow-step::before{content:'→';position:absolute;left:-14px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:18px;z-index:1;background:var(--bg);padding:0 3px}
+.step-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);margin-bottom:5px}
+.step-name{font-weight:600;color:var(--cream);font-size:13.5px;margin-bottom:3px}
+.step-desc{font-size:12.5px;color:var(--muted)}
+
+/* VS BOX */
+.vs-box{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+.vs-side{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.vs-side h4{font-family:'Playfair Display',serif;font-size:.95rem;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--border)}
+.vs-side ul{list-style:none}
+.vs-side ul li{font-size:14.5px;color:var(--text);padding:3px 0 3px 18px;position:relative}
+.vs-side ul li::before{content:'•';position:absolute;left:0;font-size:15px}
+.vs-side.left h4,.vs-side.left ul li::before{color:var(--b)}
+.vs-side.right h4,.vs-side.right ul li::before{color:var(--c)}
+
+/* KEY POINTS */
+.key-points{display:grid;gap:9px;margin:14px 0}
+.kp{display:flex;gap:12px;align-items:flex-start;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 15px;transition:border-color .2s}
+.kp:hover{border-color:rgba(212,168,67,.3)}
+.kp-icon{font-size:19px;flex-shrink:0;margin-top:2px}
+.kp-text h4{font-size:14.5px;color:var(--cream);font-family:'Playfair Display',serif;margin-bottom:3px}
+.kp-text p{font-size:14px;color:var(--text)}
+.kp-text ul{padding-left:16px;font-size:14px;color:var(--text)}
+.kp-text ul li{margin-bottom:2px}
+
+/* REVISION GRID */
+.revision-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:11px;margin:14px 0}
+.rv-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:13px 15px;text-align:center;transition:transform .2s}
+.rv-card:hover{transform:scale(1.02)}
+.rv-icon{font-size:24px;margin-bottom:7px}
+.rv-term{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--gold);letter-spacing:1px;margin-bottom:5px}
+.rv-card p{font-size:13px;color:var(--text)}
+
+/* LAW CARD */
+.law-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px}
+.law-header{padding:13px 18px;display:flex;align-items:center;gap:11px;background:var(--bg3);border-bottom:1px solid var(--border)}
+.law-icon{font-size:21px}
+.law-header h3{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--cream)}
+.law-body{padding:16px 18px}
+
+/* FOOTER */
+footer{text-align:center;padding:28px 20px;border-top:1px solid var(--border);color:var(--muted);font-size:13px;font-family:'JetBrains Mono',monospace;letter-spacing:.5px}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:600px){
+  .vs-box{grid-template-columns:1fr}
+  .flow-step+.flow-step::before{display:none}
+  .flow{flex-direction:column}
+  .flow-step{border-radius:10px}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid"></div>
+  <h1>Monetary and <span>Financial</span><br>System (MAFS)</h1>
+  <div class="hero-tags">
+    <span>🏦 General Banking</span><span>💱 Foreign Exchange</span><span>⚖️ Banking Laws</span>
+    <span>🧾 Negotiable Instruments</span><span>🔐 AML / KYC</span><span>🏢 Company Law</span>
+    <span>💻 Digital Banking</span><span>💵 Cash Management</span><span>📂 Account Opening</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="toc">
+  <div class="toc-inner">
+    <button class="toc-btn" onclick="goTo('mod-a')">🏦 Banking Concepts</button><div class="toc-sep"></div>
+    <button class="toc-btn" onclick="goTo('mod-banking-types')">🌐 Banking Types</button><div class="toc-sep"></div>
+    <button class="toc-btn" onclick="goTo('mod-banker-cust')">🤝 Banker–Customer</button><div class="toc-sep"></div>
+    <button class="toc-btn" onclick="goTo('mod-accounts')">📂 Accounts</button><div class="toc-sep"></div>
+    <button class="toc-btn" onclick="goTo('mod-kyc')">🔐 KYC / AML</button><div class="toc-sep"></div>
+    <button class="toc-btn" onclick="goTo('mod-b')">🧾 Negotiable Instruments</button><div class="toc-sep"></div>
+    <button class="toc-btn" onclick="goTo('mod-c')">💱 Foreign Exchange</button><div class="toc-sep"></div>
+    <button class="toc-btn" onclick="goTo('mod-d')">💻 Digital Banking</button><div class="toc-sep"></div>
+    <button class="toc-btn" onclick="goTo('mod-cash')">💵 Cash Management</button><div class="toc-sep"></div>
+    <button class="toc-btn" onclick="goTo('mod-ops')">⚙️ Bank Operations</button><div class="toc-sep"></div>
+    <button class="toc-btn" onclick="goTo('mod-law')">⚖️ Banking Laws</button><div class="toc-sep"></div>
+    <button class="toc-btn" onclick="goTo('mod-company')">🏢 Company Law</button><div class="toc-sep"></div>
+    <button class="toc-btn" onclick="goTo('mod-revision')">⚡ Quick Revision</button>
+  </div>
+</nav>
+
+<!-- SEARCH -->
+<div class="search-wrap">
+  <div class="search-inner">
+    <div class="search-box">
+      <span style="color:var(--muted)">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search any topic, term, or concept…" oninput="handleSearch()">
+      <span id="resultCount"></span>
+    </div>
+  </div>
+</div>
+
+<div class="container" id="mainContent">
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODULE A: CORE BANKING CONCEPTS -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section class="module" id="mod-a">
+  <div class="module-header">
+    <div class="module-icon" style="background:rgba(212,168,67,.15);">🏦</div>
+    <div class="module-title"><small>MODULE A</small>Core Banking Concepts</div>
+  </div>
+
+  <!-- 1. Bancassurance -->
+  <div class="section-h">🏦 1. Bancassurance</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>A <strong>partnership between a bank and an insurance company</strong> where the bank acts as a sales channel for insurance products to its existing customer base.</p>
+  </div>
+  <div class="example"><div class="ex-label">Example</div>
+    <p>You visit <strong>BRAC Bank</strong> to open an account. The officer also offers you a <strong>MetLife insurance policy</strong>. The bank earns a commission; MetLife gains a new customer — that's bancassurance.</p>
+  </div>
+  <div class="cards cards-2" style="margin-top:12px">
+    <div class="card green"><span class="card-icon">✅</span><h3>Prospects in Bangladesh</h3><ul>
+      <li>People trust banks → easier insurance sales</li><li>Expanding middle class = more customers</li>
+      <li>Promotes financial inclusion</li><li>Cost-effective distribution channel</li></ul></div>
+    <div class="card red"><span class="card-icon">⚠️</span><h3>Challenges</h3><ul>
+      <li>Low public awareness of insurance</li><li>Bank staff need specialised training</li>
+      <li>Complex regulatory approvals</li><li>Conflict of interest risk</li></ul></div>
+  </div>
+
+  <!-- 2. Crawling Peg -->
+  <div class="section-h">💱 2. Crawling Peg System</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>A system where a country's currency value is <strong>adjusted gradually and incrementally</strong> rather than in sudden large movements — giving businesses time to plan.</p>
+  </div>
+  <div class="example"><div class="ex-label">Example</div>
+    <p>1 USD = 120 BDT. Government moves it slowly: 121 → 122 → 123 BDT over months, <em>instead of</em> a sudden jump to 130 BDT. Exporters can plan; market panic is avoided.</p>
+  </div>
+
+  <!-- 3. Deposit Mix -->
+  <div class="section-h">💰 3. Deposit Mix</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>The <strong>variety/composition of a bank's deposits</strong> — savings, current, and fixed — used to balance short-term liquidity and long-term lending capacity.</p>
+  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Deposit Type</th><th>Nature</th><th>Interest</th><th>Liquidity</th></tr></thead>
+    <tbody>
+      <tr><td>Fixed Deposits</td><td>Long-term</td><td>Highest</td><td>Low</td></tr>
+      <tr><td>Savings Accounts</td><td>Medium-term</td><td>Moderate</td><td>Medium</td></tr>
+      <tr><td>Current Accounts</td><td>Short-term</td><td>None</td><td>Highest</td></tr>
+    </tbody>
+  </table></div>
+  <div class="example"><div class="ex-label">Analogy</div>
+    <p>Like keeping some money in a piggy bank (emergency/current) and some in DPS (long-term/fixed). The mix helps the bank stay liquid while also earning from loans.</p>
+  </div>
+
+  <!-- 4. Treasury Bonds -->
+  <div class="section-h">💵 4. Treasury Bonds</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>A <strong>long-term loan you give to the Bangladesh Government</strong>. The government promises to repay with interest at fixed intervals.</p>
+  </div>
+  <div class="example"><div class="ex-label">Example</div>
+    <p>You buy a 10-year Bangladesh Treasury Bond worth Tk. 1 lakh. You lend money to the government; they pay you interest every 6 months and return your principal at maturity.</p>
+  </div>
+
+  <!-- 5. Repo & Reverse Repo -->
+  <div class="section-h">💶 5. Repo &amp; Reverse Repo</div>
+  <div class="vs-box">
+    <div class="vs-side left"><h4>📥 Repo (Bank borrows from BB)</h4><ul>
+      <li>Bank sells securities to BB</li><li>Promises to repurchase later</li>
+      <li>Bank gets short-term liquidity</li><li><em>BRAC Bank sells bonds to BB today, buys back tomorrow</em></li></ul></div>
+    <div class="vs-side right"><h4>📤 Reverse Repo (BB borrows from Banks)</h4><ul>
+      <li>BB buys securities from banks</li><li>Banks park excess funds with BB</li>
+      <li>Absorbs excess liquidity from market</li><li><em>BB buys bonds to inject / absorb money supply</em></li></ul></div>
+  </div>
+
+  <!-- 6. Central Bank — Lender of Last Resort -->
+  <div class="section-h">⚙️ 6. Central Bank as Lender of Last Resort</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>When all commercial banks run short of funds, <strong>Bangladesh Bank provides emergency liquidity</strong> to prevent bank runs and systemic collapse.</p>
+  </div>
+  <div class="example"><div class="ex-label">Example</div>
+    <p>City Bank faces a sudden rush of withdrawals and runs short of cash. It borrows from Bangladesh Bank to meet demand — preventing public panic.</p>
+  </div>
+
+  <!-- 7. Crossing a Cheque -->
+  <div class="section-h">✍️ 7. Crossing a Cheque</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>Drawing <strong>two parallel lines</strong> on the face of a cheque means it <strong>cannot be cashed over the counter</strong> — it must be deposited into a bank account. This adds security.</p>
+  </div>
+  <div class="example"><div class="ex-label">Example</div>
+    <p>Your employer gives you a <em>crossed</em> salary cheque. You cannot withdraw cash at the counter — you must deposit it into your account. This creates a paper trail and prevents theft.</p>
+  </div>
+  <div class="highlight"><h4>📌 Important Note on "Bearer → Order" Alteration</h4>
+    <p>Even if a cheque is changed from "bearer" to "order," this is <strong>NOT a material alteration</strong> — it only adds safety. The cheque remains legally valid and the drawer must still pay.</p>
+  </div>
+
+  <!-- 8. Demand Draft (DD) -->
+  <div class="section-h">🪙 8. Demand Draft (DD)</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>A pre-paid payment instrument issued by a bank guaranteeing payment to a specific named payee. <strong>Cannot be made payable to Bearer</strong> — must always name a specific payee.</p>
+  </div>
+  <div class="example"><div class="ex-label">Example — DD Payable to Bearer NOT Allowed</div>
+    <p>You <strong>cannot</strong> write "Pay Bearer" on a DD. It must say "Pay Mr. Rahim or Order." This prevents fraud and theft.</p>
+  </div>
+  <div class="section-h" style="font-size:1rem;margin-top:16px">📋 Procedure if DD is Lost</div>
+  <div class="flow">
+    <div class="flow-step"><div class="step-num">STEP 1</div><div class="step-name">🔍 Verify Claim</div><div class="step-desc">Verify the buyer's claim about the lost DD</div></div>
+    <div class="flow-step"><div class="step-num">STEP 2</div><div class="step-name">🛑 Stop Payment</div><div class="step-desc">Immediately instruct stop payment</div></div>
+    <div class="flow-step"><div class="step-num">STEP 3</div><div class="step-name">📜 Indemnity Bond</div><div class="step-desc">Take an indemnity bond from the buyer</div></div>
+    <div class="flow-step"><div class="step-num">STEP 4</div><div class="step-name">✅ Reissue</div><div class="step-desc">Issue refund or duplicate DD</div></div>
+  </div>
+
+  <!-- 9. Alternative Dispute Resolution (ADR) -->
+  <div class="section-h">⚖️ 9. Alternative Dispute Resolution (ADR)</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>Settling legal/financial disputes <strong>without going to court</strong> — faster, cheaper, and less adversarial.</p>
+  </div>
+  <div class="cards cards-2">
+    <div class="card blue"><span class="card-icon">🗣️</span><h3>Negotiation</h3><p>You and the bank talk <strong>directly</strong> to resolve the issue — no third party involved.</p></div>
+    <div class="card green"><span class="card-icon">🤝</span><h3>Mediation</h3><p>A <strong>neutral third party</strong> helps both sides communicate and reach an agreement.</p></div>
+    <div class="card gold"><span class="card-icon">⚖️</span><h3>Arbitration</h3><p>An <strong>independent arbitrator</strong> hears both sides and makes a binding decision.</p></div>
+    <div class="card purple"><span class="card-icon">🕊️</span><h3>Conciliation</h3><p>Both sides <strong>compromise</strong> with the help of a conciliator who suggests solutions.</p></div>
+  </div>
+  <div class="example"><div class="ex-label">Example</div>
+    <p>A loan customer complains about unfair charges. Instead of filing a court case, the issue is resolved through mediation — saving time and legal costs for both sides.</p>
+  </div>
+
+  <!-- 10. Ethical Risk in Banking -->
+  <div class="section-h">💡 10. Ethical Risk in Banking</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>When bankers act <strong>unethically</strong>, harming the bank's reputation, customers, and the financial system.</p>
+  </div>
+  <div class="cards cards-2">
+    <div class="card red"><span class="card-icon">🚫</span><h3>Examples of Ethical Risks</h3><ul>
+      <li>Giving loans to friends without proper documents</li>
+      <li>Misleading customers about interest rates</li>
+      <li>Treating customers unequally / discriminating</li>
+      <li>Using insider information to profit personally</li>
+      <li>Leaking a customer's account details for money</li>
+    </ul></div>
+    <div class="card orange"><span class="card-icon">🛡️</span><h3>How Banks Mitigate</h3><ul>
+      <li>Strong internal audit controls</li>
+      <li>Code of conduct and ethics training</li>
+      <li>Whistleblower protection policies</li>
+      <li>Regulatory supervision by Bangladesh Bank</li>
+    </ul></div>
+  </div>
+
+  <!-- 11. NBFI vs Commercial Bank -->
+  <div class="section-h">🏢 11. NBFI vs Commercial Bank</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Feature</th><th>Commercial Bank</th><th>NBFI</th></tr></thead>
+    <tbody>
+      <tr><td>Accept Deposits?</td><td>Yes — all types</td><td>Only term deposits</td></tr>
+      <tr><td>Main Services</td><td>Loans, savings, remittance</td><td>Leasing, housing finance</td></tr>
+      <tr><td>Examples</td><td>BRAC Bank, EBL, City Bank</td><td>IDLC, IPDC, LankaBangla</td></tr>
+      <tr><td>Deposit Insurance</td><td>Yes (BB backed)</td><td>No central insurance</td></tr>
+      <tr><td>Primary Customers</td><td>General public</td><td>Corporations, developers</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- 12. Limitations of NBFIs -->
+  <div class="section-h">🏢 12. Limitations of NBFIs</div>
+  <div class="key-points">
+    <div class="kp"><div class="kp-icon">🔒</div><div class="kp-text"><h4>Restricted Deposit Types</h4>
+      <p>Can only take <strong>fixed/term deposits</strong> — not savings or current accounts. You can't keep an everyday account in IDLC like you do in BRAC Bank.</p></div></div>
+    <div class="kp"><div class="kp-icon">⚖️</div><div class="kp-text"><h4>Regulatory Constraints</h4>
+      <p>Bangladesh Bank limits how much and what kind of deposits they can accept — restricts their growth compared to banks.</p></div></div>
+    <div class="kp"><div class="kp-icon">💸</div><div class="kp-text"><h4>No Deposit Insurance</h4>
+      <p>If an NBFI fails, depositors have <strong>no central-bank insurance</strong> protection — unlike scheduled bank deposits.</p></div></div>
+    <div class="kp"><div class="kp-icon">💰</div><div class="kp-text"><h4>High Capital Requirement</h4>
+      <p>Must maintain higher capital ratios as a safety buffer, limiting how fast they can grow their deposit base.</p></div></div>
+  </div>
+
+  <!-- 13. Finance Company Act 2023 -->
+  <div class="section-h">🌏 13. Finance Company Act 2023 — Attracting Foreign Investment</div>
+  <div class="def-block"><div class="def-label">Purpose</div>
+    <p>To make it easier for <strong>foreign investors to put money into Bangladeshi NBFIs</strong>, boosting the financial sector.</p>
+  </div>
+  <div class="cards cards-2">
+    <div class="card green"><span class="card-icon">🧾</span><h3>Key Provisions</h3><ul>
+      <li><strong>Tax Benefits</strong> — foreign investors get tax breaks (e.g., Singapore fund invests in IDLC)</li>
+      <li><strong>Foreign Ownership</strong> — foreigners can buy a larger share</li>
+      <li><strong>Regulatory Flexibility</strong> — NBFIs get freedom to design new products</li>
+      <li><strong>Better Governance</strong> — transparency rules boost foreign trust</li>
+    </ul></div>
+    <div class="card blue"><span class="card-icon">🌐</span><h3>Expected Benefits</h3><ul>
+      <li>More capital flows into Bangladesh</li>
+      <li>Increased competition and efficiency</li>
+      <li>Better financial products for customers</li>
+      <li>Stronger financial sector overall</li>
+    </ul></div>
+  </div>
+
+  <!-- 14. Financial Literacy -->
+  <div class="section-h">💡 14. Financial Literacy</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>Knowing how to <strong>earn, save, spend, invest, and protect</strong> money wisely — making informed financial decisions in daily life.</p>
+  </div>
+  <div class="example"><div class="ex-label">Example</div>
+    <p>A person who budgets monthly income, pays bills on time, saves for emergencies, avoids scams, and invests for the future is financially literate. Banks run programs to teach these skills to the public.</p>
+  </div>
+
+  <!-- 15. Lease Finance -->
+  <div class="section-h">🚗 15. Lease Finance</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p><strong>Using an asset without owning it</strong> — the lessee pays regular rent to the lessor (NBFI/bank) for use of the asset, with an option to buy at the end.</p>
+  </div>
+  <div class="example"><div class="ex-label">Example</div>
+    <p>A company leases a photocopier from IDLC for 3 years. They use it, pay monthly rent, and can return or buy it at the end. This preserves working capital — they don't need to buy outright.</p>
+  </div>
+
+  <!-- 16. BB Monitoring of Classified Loans -->
+  <div class="section-h">🧾 16. Bangladesh Bank's Monitoring of Classified Loans</div>
+  <div class="def-block"><div class="def-label">Classified Loans</div>
+    <p>Loans where borrowers <strong>don't repay on time</strong>. Bangladesh Bank tracks these using <strong>CIB reports</strong> (Credit Information Bureau) and loan rescheduling rules.</p>
+  </div>
+  <div class="highlight"><h4>⚠️ Key Problem</h4>
+    <p>Many banks <strong>misuse rescheduling facilities</strong> — they keep rescheduling loans every year instead of actually recovering them, hiding the true default rate.</p>
+  </div>
+  <div class="example"><div class="ex-label">Example</div>
+    <p>A big borrower keeps rescheduling his loan every year instead of repaying. The bank avoids showing it as a default. Bangladesh Bank's steps are good, but stronger monitoring, skilled staff, and punishment for misuse are still needed.</p>
+  </div>
+
+  <!-- 17. Bid, Bond & Performance Guarantee -->
+  <div class="section-h">🏗️ 17. Bid, Bond &amp; Performance Guarantee</div>
+  <div class="cards cards-3">
+    <div class="card blue"><span class="card-icon">📝</span><h3>Bid</h3>
+      <p>A company's offer to take on a project at a specific price.</p>
+      <div class="example" style="margin-top:10px"><div class="ex-label">Example</div><p>A builder bids Tk. 5 crore to build a school.</p></div></div>
+    <div class="card gold"><span class="card-icon">📋</span><h3>Bid Bond</h3>
+      <p>A security deposit submitted with the bid, ensuring the bidder will sign the contract if selected.</p>
+      <div class="example" style="margin-top:10px"><div class="ex-label">Example</div><p>Builder submits Tk. 10 lakh bid bond as security.</p></div></div>
+    <div class="card green"><span class="card-icon">✅</span><h3>Performance Guarantee</h3>
+      <p>Ensures the contractor actually completes the job properly.</p>
+      <div class="example" style="margin-top:10px"><div class="ex-label">Example</div><p>Builder's bank gives Tk. 1 crore performance guarantee to the Education Board.</p></div></div>
+  </div>
+
+  <!-- 18. Drawing Power & Power of Attorney -->
+  <div class="section-h">🏦 18. Drawing Power &amp; Power of Attorney</div>
+  <div class="vs-box">
+    <div class="vs-side left"><h4>💳 Drawing Power (DP)</h4><ul>
+      <li>Maximum amount a borrower can withdraw from a loan account</li>
+      <li>Based on the value of goods pledged to the bank</li>
+      <li>Bank typically lends 60–80% of pledged goods' value</li>
+      <li><em>Goods worth Tk.50 lakh pledged, bank allows 70% → DP = Tk.35 lakh</em></li></ul></div>
+    <div class="vs-side right"><h4>📜 Power of Attorney (POA)</h4><ul>
+      <li>Written authority given to someone to act on your behalf</li>
+      <li>Can cover banking, property, legal, business transactions</li>
+      <li>Must be registered for property matters</li>
+      <li><em>Businessman in Dubai gives his brother POA to handle his BRAC Bank account</em></li></ul></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODULE: BANKING TYPES -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section class="module" id="mod-banking-types">
+  <div class="module-header">
+    <div class="module-icon" style="background:rgba(86,182,194,.15);">🌐</div>
+    <div class="module-title"><small>MODULE A — CONTINUED</small>Types of Banking</div>
+  </div>
+
+  <!-- Banking Systems -->
+  <div class="section-h">🌐 19. Different Banking Systems</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>System</th><th>Explanation</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td>Branch Banking</td><td>One bank with many branches under one HQ</td><td>BRAC Bank across Bangladesh</td></tr>
+      <tr><td>Unit Banking</td><td>Each bank has only one office — no branches</td><td>Common in small U.S. towns</td></tr>
+      <tr><td>Chain Banking</td><td>Multiple banks controlled by same group/family</td><td>One owner group controls multiple banks</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- 5 Types of Banking -->
+  <div class="section-h">💵 20. Five Types of Banking Operations</div>
+  <div class="cards cards-3">
+    <div class="card blue"><span class="card-icon">🏦</span><h3>Deposit Banking</h3>
+      <p>Accepting deposits and giving short-term loans. The earliest form of banking.</p>
+      <div style="margin-top:8px"><span class="badge badge-blue">Early English banks</span></div></div>
+    <div class="card gold"><span class="card-icon">📈</span><h3>Investment Banking</h3>
+      <p>Helping large firms raise capital, issue shares, manage IPOs and mergers.</p>
+      <div style="margin-top:8px"><span class="badge badge-gold">Goldman Sachs managing IPOs</span></div></div>
+    <div class="card green"><span class="card-icon">🔀</span><h3>Mixed Banking</h3>
+      <p>Combines deposit and investment banking — most modern commercial banks.</p>
+      <div style="margin-top:8px"><span class="badge badge-green">Banks offering loans + investment advice</span></div></div>
+    <div class="card teal"><span class="card-icon">🛍️</span><h3>Retail Banking</h3>
+      <p>Serving individuals — savings, credit cards, personal loans, bill payments.</p>
+      <div style="margin-top:8px"><span class="badge" style="background:rgba(86,182,194,.15);color:var(--f);border:1px solid rgba(86,182,194,.3)">BRAC Bank app for individuals</span></div></div>
+    <div class="card purple"><span class="card-icon">📱</span><h3>Virtual Banking</h3>
+      <p>Fully online banking — apps, ATMs, POS, internet banking, no physical branches.</p>
+      <div style="margin-top:8px"><span class="badge badge-purple">bKash Smart Bank, Wise</span></div></div>
+  </div>
+
+  <!-- General Banking -->
+  <div class="section-h">🔁 21. General Banking</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>The <strong>everyday banking operations</strong> of a branch — account opening, deposits, cheque clearing, remittances, lockers, debit/credit cards, standing instructions, and customer service.</p>
+  </div>
+  <div class="example"><div class="ex-label">Example</div>
+    <p>The Customer Service Department of any bank branch handles General Banking — everything from opening your first account to processing your outward remittance.</p>
+  </div>
+
+  <!-- What is a Bank -->
+  <div class="section-h">🏛️ 22. What is a Bank?</div>
+  <div class="vs-box">
+    <div class="vs-side left"><h4>✅ Scheduled Banks</h4><ul>
+      <li>Licensed under the Bank Company Act 1991</li>
+      <li>Listed in Bangladesh Bank's schedule</li>
+      <li>Subject to full BB supervision</li>
+      <li><em>SEBL, CBBL, Jamuna Bank, BRAC Bank</em></li></ul></div>
+    <div class="vs-side right"><h4>📋 Non-Scheduled Banks</h4><ul>
+      <li>Limited purpose / special mandate banks</li>
+      <li>Not listed in the standard schedule</li>
+      <li>Serve specific segments of population</li>
+      <li><em>Grameen Bank, Palli Sanchay Bank</em></li></ul></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODULE: BANKER–CUSTOMER RELATIONSHIP -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section class="module" id="mod-banker-cust">
+  <div class="module-header">
+    <div class="module-icon" style="background:rgba(198,120,221,.15);">🤝</div>
+    <div class="module-title"><small>MODULE A — CONTINUED</small>Banker–Customer Relationship</div>
+  </div>
+
+  <!-- General Relationship -->
+  <div class="section-h">🧩 23. General Banker–Customer Relationship</div>
+  <div class="highlight"><h4>📌 Core Principle</h4>
+    <p>When a customer opens an account, both sides enter a <strong>legal contract</strong> under the Contract Act 1872. The bank verifies identity through KYC before accepting. The relationship changes direction depending on who owes whom:</p>
+    <ul style="margin-top:8px">
+      <li><strong>You deposit money</strong> → you are the <em>creditor</em>, bank is the <em>debtor</em></li>
+      <li><strong>You take a loan</strong> → you are the <em>debtor</em>, bank is the <em>creditor</em></li>
+    </ul>
+  </div>
+
+  <!-- Types of Relationships -->
+  <div class="section-h">🤝 24. Types of Banker–Customer Relationships</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Relationship Type</th><th>Meaning</th><th>Real-Life Example</th></tr></thead>
+    <tbody>
+      <tr><td>Debtor–Creditor</td><td>You deposit money → bank owes you</td><td>Salary deposited in BRAC Bank savings account</td></tr>
+      <tr><td>Creditor–Debtor</td><td>Bank gives loan → you owe bank</td><td>Home loan from DBBL</td></tr>
+      <tr><td>Principal–Agent</td><td>Bank acts on your behalf</td><td>Bank collects your DPS cheque from another bank</td></tr>
+      <tr><td>Trustee–Beneficiary</td><td>Bank holds assets for safe return</td><td>Funds held for a specific purpose</td></tr>
+      <tr><td>Bailor–Bailee</td><td>Goods given for safe-keeping</td><td>Gold pledged for a loan — bank keeps it safely</td></tr>
+      <tr><td>Lessor–Lessee</td><td>Locker service on rental basis</td><td>Safe deposit locker rented at EBL</td></tr>
+      <tr><td>Mortgagor–Mortgagee</td><td>Property pledged as loan security</td><td>Flat mortgaged for a home loan</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- Special Relationship -->
+  <div class="section-h">⚖️ 25. Special Relationship — Bank's Obligations</div>
+  <div class="key-points">
+    <div class="kp"><div class="kp-icon">✅</div><div class="kp-text"><h4>Honour Cheques</h4>
+      <p>Bank <strong>must pay valid cheques</strong> if: properly drawn, sufficient balance, correct signature, presented within reasonable time. If Tk.5,000 cheque presented with Tk.10,000 balance → bank must honour it.</p></div></div>
+    <div class="kp"><div class="kp-icon">🔒</div><div class="kp-text"><h4>Maintain Secrecy</h4>
+      <p>Bank must keep account information <strong>private</strong> — even after account closure — except by court order or legal requirement. Bank cannot reveal your loan balance to outsiders.</p></div></div>
+    <div class="kp"><div class="kp-icon">💸</div><div class="kp-text"><h4>Right to Charge Interest/Fees</h4>
+      <p>Banks can charge service fees — processing, appraisal, penal interest, SMS alerts, etc. Published in their Schedule of Charges.</p></div></div>
+    <div class="kp"><div class="kp-icon">🔐</div><div class="kp-text"><h4>Banker's Lien</h4>
+      <p>Bank can <strong>retain goods or securities</strong> until dues are cleared, and sell them after notice if unpaid. Two types: <em>General Lien</em> (any property for any dues) and <em>Particular Lien</em> (specific items for that specific loan).</p></div></div>
+  </div>
+
+  <!-- Rights of a Banker -->
+  <div class="section-h">🏦 26. Rights of a Banker</div>
+  <div class="cards cards-2">
+    <div class="card gold"><span class="card-icon">🔒</span><h3>Right of Lien</h3>
+      <p>Legal power to <strong>hold property or securities until debt is paid</strong>.</p>
+      <ul style="margin-top:8px">
+        <li><strong>General Lien:</strong> Any property held by bank for any dues owed</li>
+        <li><strong>Particular Lien:</strong> Only specific items linked to that specific loan</li>
+      </ul>
+      <div class="example" style="margin-top:10px"><div class="ex-label">Example</div><p>Bank keeps your FDR as lien until loan repayment is complete.</p></div></div>
+    <div class="card blue"><span class="card-icon">➕</span><h3>Right of Set-Off</h3>
+      <p>Allows bank to <strong>adjust a customer's credit balance in one account against debit in another</strong>.</p>
+      <div class="example" style="margin-top:10px"><div class="ex-label">Example</div><p>You owe Tk.1 lakh on loan but have Tk.40,000 in savings — bank can set off Tk.40,000 automatically from your savings to reduce the loan balance.</p></div></div>
+  </div>
+
+  <!-- Termination -->
+  <div class="section-h">🚪 27. Termination of Banker–Customer Relationship</div>
+  <div class="vs-box">
+    <div class="vs-side left"><h4>🙋 By Customer</h4><ul>
+      <li>Closes account anytime voluntarily</li>
+      <li>Not satisfied with services</li>
+      <li>Loss of confidence in the bank</li>
+      <li>Disagrees with new terms and conditions</li></ul></div>
+    <div class="vs-side right"><h4>🏦 By Banker</h4><ul>
+      <li>Customer's death, insanity, or insolvency</li>
+      <li>Account legally assigned to another person</li>
+      <li>Suspicious activity / fraud detected</li>
+      <li>Court/regulatory order to freeze/close</li></ul></div>
+  </div>
+
+  <!-- When Bank Can Disclose -->
+  <div class="section-h">🔐 28. When a Banker Can Disclose Customer Secrets</div>
+  <div class="highlight"><h4>🔒 General Rule: Information is confidential — BUT disclosure is permitted when:</h4></div>
+  <div class="cards cards-3" style="margin-top:10px">
+    <div class="card blue"><span class="card-icon">✅</span><h3>Customer Consent</h3><p>The customer explicitly gives permission for disclosure.</p></div>
+    <div class="card gold"><span class="card-icon">⚖️</span><h3>Law / Court Order</h3><p>A court order or statute (e.g., AML Act) requires disclosure.</p></div>
+    <div class="card green"><span class="card-icon">🏦</span><h3>Bank's Own Interest</h3><p>To protect the bank's legal interest (e.g., in court proceedings).</p></div>
+    <div class="card red"><span class="card-icon">🚨</span><h3>Legal Duty (Crime)</h3><p>Suspected crime, fraud, or money laundering must be reported.</p></div>
+    <div class="card purple"><span class="card-icon">🔍</span><h3>Regulatory Inspection</h3><p>Bangladesh Bank inspection or audit requires access to records.</p></div>
+  </div>
+
+  <!-- Joint Account -->
+  <div class="section-h">💑 29. Joint Account — Husband &amp; Wife / Either or Survivor</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Account Mode</th><th>Operation</th><th>After One Party Dies</th></tr></thead>
+    <tbody>
+      <tr><td>Either or Survivor</td><td>Either party can operate alone</td><td>Survivor withdraws full balance — just show death certificate</td></tr>
+      <tr><td>Both to Operate (Jointly)</td><td>Both signatures needed</td><td>Survivor must go through legal succession process</td></tr>
+      <tr><td>With Nominee</td><td>Normal operation</td><td>Nominee receives money per bank policy</td></tr>
+    </tbody>
+  </table></div>
+  <div class="example"><div class="ex-label">Example</div>
+    <p>Mr. Aman &amp; Mrs. Zaman have an "Either or Survivor" account. After Aman's death, Zaman submits his death certificate and can withdraw the full balance immediately.</p>
+  </div>
+
+  <!-- Schedule of Charges -->
+  <div class="section-h">💵 30. Schedule of Charges</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>Each bank publishes a <strong>list of service fees</strong> for facilities like ATM usage, locker rental, remittance processing, SMS alerts, cheque book issuance, card fees, etc. — this is the Schedule of Charges.</p>
+  </div>
+
+  <!-- Guarantee vs Indemnity -->
+  <div class="section-h">🤝 31. Guarantee vs Indemnity</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Feature</th><th>Guarantee</th><th>Indemnity</th></tr></thead>
+    <tbody>
+      <tr><td>Parties</td><td>3 — Creditor, Debtor, Surety</td><td>2 — Indemnifier and Indemnified</td></tr>
+      <tr><td>Nature</td><td>Surety pays <em>if</em> debtor defaults</td><td>One party protects other from all loss</td></tr>
+      <tr><td>Liability</td><td>Secondary (conditional)</td><td>Primary (unconditional)</td></tr>
+      <tr><td>Example</td><td>Friend signs as guarantor for your loan</td><td>Insurance company covers fire damage to business</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODULE: ACCOUNTS -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section class="module" id="mod-accounts">
+  <div class="module-header">
+    <div class="module-icon" style="background:rgba(126,232,162,.15);">📂</div>
+    <div class="module-title"><small>MODULE A — CONTINUED</small>Deposit Accounts &amp; Account Opening</div>
+  </div>
+
+  <!-- Types of Deposit Accounts -->
+  <div class="section-h">💰 32. Types of Deposit Accounts</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Account Type</th><th>For Whom</th><th>Interest</th><th>Key Feature</th></tr></thead>
+    <tbody>
+      <tr><td>Current Deposit</td><td>Businesses</td><td>None</td><td>Unlimited transactions; overdraft facility</td></tr>
+      <tr><td>Savings Deposit</td><td>Individuals</td><td>Yes (moderate)</td><td>Limited monthly transactions allowed</td></tr>
+      <tr><td>Fixed Deposit (FDR)</td><td>Anyone</td><td>Highest</td><td>Lump sum for fixed period; penalty for early withdrawal</td></tr>
+      <tr><td>Short Term Deposit (STD)</td><td>Organisations</td><td>Low</td><td>Short notice withdrawal; for institutional short-term parking</td></tr>
+      <tr><td>Recurring Deposit (DPS)</td><td>Individuals</td><td>Yes</td><td>Small regular monthly deposits; builds savings habit</td></tr>
+      <tr><td>School Banking</td><td>Students</td><td>Yes</td><td>Builds savings habit; no minimum balance</td></tr>
+      <tr><td>No-Frills Account</td><td>Low-income people</td><td>Yes</td><td>Minimal balance requirement; basic facilities only</td></tr>
+      <tr><td>Farmer's Account</td><td>Farmers</td><td>Yes</td><td>Open with only Tk. 10; NID + Agri Card needed</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- Account Opening General Rules -->
+  <div class="section-h">🧾 33. Account Opening — General Rules</div>
+  <div class="cards cards-3">
+    <div class="card blue"><span class="card-icon">🎂</span><h3>Age &amp; Mental Capacity</h3><p>Customer must be <strong>18+</strong> and mentally sound to open an account independently.</p></div>
+    <div class="card gold"><span class="card-icon">📄</span><h3>Valid Documents</h3><p>Must provide valid NID, photo, and proof of source of income. Bank must verify authenticity.</p></div>
+    <div class="card green"><span class="card-icon">🎯</span><h3>Satisfied with Purpose</h3><p>Bank must be satisfied with the purpose of account opening before proceeding.</p></div>
+  </div>
+
+  <!-- Types of Accounts -->
+  <div class="section-h">👥 34. Types of Accounts by Ownership</div>
+  <div class="section-h" style="font-size:1rem;margin-top:10px">Individual Accounts</div>
+  <div class="cards cards-3">
+    <div class="card blue"><span class="card-icon">👤</span><h3>Single Account</h3><p>Operated by <strong>one person</strong> alone. Standard individual account.</p></div>
+    <div class="card gold"><span class="card-icon">👥</span><h3>Joint Account</h3><p>Operated by <strong>two or more people</strong>. Can be Either/Survivor or Both to Operate.</p></div>
+    <div class="card green"><span class="card-icon">🧒</span><h3>Minor Account</h3><p>Opened by a <strong>guardian</strong> on behalf of a person under 18. Operated by guardian until maturity.</p></div>
+  </div>
+
+  <!-- Special Personal Accounts -->
+  <div class="section-h" style="font-size:1rem">Special Personal Accounts</div>
+  <div class="cards cards-3">
+    <div class="card purple"><span class="card-icon">👍</span><h3>Illiterate Person</h3><p>Thumb impression + photo + witness required. Bank takes special precautions for each transaction.</p></div>
+    <div class="card teal"><span class="card-icon">♿</span><h3>Disabled Person</h3><p>Guardian or nominee needed to operate account. Special documentation required.</p></div>
+    <div class="card orange"><span class="card-icon">⚖️</span><h3>Executor / Administrator</h3><p>Manages estate of a <strong>deceased person</strong>. Requires probate / succession certificate.</p></div>
+  </div>
+
+  <!-- Special Accounts -->
+  <div class="section-h">🌾 35. Special Bank Accounts</div>
+  <div class="cards cards-2">
+    <div class="card green"><span class="card-icon">🌾</span><h3>Farmer's Account</h3><ul>
+      <li>Open with only <strong>BDT 10</strong></li>
+      <li>Requires NID/Birth Certificate + Agricultural Equipment Assistance Card</li>
+      <li>Designed for financial inclusion of rural farmers</li></ul></div>
+    <div class="card blue"><span class="card-icon">🍲</span><h3>Hardcore Poor Account</h3><ul>
+      <li>Open with only <strong>BDT 10</strong> at state-owned banks</li>
+      <li>Requires NID + Registration card from Ministry of Food &amp; Disaster Management</li></ul></div>
+    <div class="card orange"><span class="card-icon">👷</span><h3>Garments Workers' Account</h3><ul>
+      <li>Open with <strong>BDT 100</strong></li>
+      <li>Wages paid directly through these accounts</li>
+      <li>Banks must submit quarterly reports to Bangladesh Bank</li></ul></div>
+    <div class="card purple"><span class="card-icon">♿</span><h3>Incapacitated / Sick / Disabled</h3><ul>
+      <li>Sick/old persons may sign using <strong>thumbprint</strong> on cheques/forms (verified by witnesses)</li>
+      <li>If unable to visit bank, authorise another person via mandate letter</li>
+      <li>Withdrawer must be identified by 2 witnesses</li></ul></div>
+  </div>
+
+  <!-- Non-Resident Accounts -->
+  <div class="section-h">🌍 36. Non-Resident Accounts</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Account Type</th><th>Meaning</th><th>Key Rules</th></tr></thead>
+    <tbody>
+      <tr><td>NRTA (Non-Resident Taka Account)</td><td>Allows non-residents to hold BDT and transact locally</td><td>Can be opened temporarily by foreign investors for capital remittance</td></tr>
+      <tr><td>Resident Account for Foreigners</td><td>For foreigners working/operating in Bangladesh</td><td>Requires form QA-22; no prior BB approval needed</td></tr>
+      <tr><td>Blocked Account</td><td>Foreign person's account frozen</td><td>Cannot withdraw without Bangladesh Bank approval</td></tr>
+      <tr><td>Special Account</td><td>For specific foreign transactions</td><td>Opened with BB approval for investment or project funding</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- Non-Individual Accounts -->
+  <div class="section-h">🏢 37. Non-Individual / Business Accounts</div>
+  <div class="key-points">
+    <div class="kp"><div class="kp-icon">🏪</div><div class="kp-text"><h4>Sole Proprietorship</h4>
+      <p>Requires: Trade License, NID, e-TIN, photograph, business documents, Personal Information Form (PIF), and Transaction Profile (TP).</p></div></div>
+    <div class="kp"><div class="kp-icon">🤝</div><div class="kp-text"><h4>Partnership Firm</h4>
+      <p>Requires: Trade License, Partnership Deed, all partners' NID, e-TIN, KYC, and partnership resolution authorising account operation.</p></div></div>
+    <div class="kp"><div class="kp-icon">🏢</div><div class="kp-text"><h4>Limited Company (Private/Public)</h4>
+      <p>Requires: MOA &amp; AOA, RJSC Incorporation Certificate, Trade License, VAT/TIN, Board Resolution, Directors &amp; Shareholders list (20%+ = Beneficial Owner), Audited Balance Sheet, Schedule X, Form XII.</p></div></div>
+    <div class="kp"><div class="kp-icon">⚖️</div><div class="kp-text"><h4>Trust Account</h4>
+      <p>Created by Trust Deed. Requires: Trust Deed, Resolution, Mandate, Trustees list, AOF &amp; signatures. Operated jointly. No transfer to personal accounts. Watch for breach of trust.</p></div></div>
+    <div class="kp"><div class="kp-icon">🏛️</div><div class="kp-text"><h4>Government Account</h4>
+      <p>Requires: Govt Order/Gazette notification, Resolution or letter from competent authority. Monthly &amp; quarterly statement submission required.</p></div></div>
+    <div class="kp"><div class="kp-icon">🏫</div><div class="kp-text"><h4>Club / Society / Association</h4>
+      <p>Requires: Registration certificate, Bye-laws/constitution, EC Resolution &amp; member list, EC member IDs.</p></div></div>
+  </div>
+
+  <!-- Transaction Profile & PIF -->
+  <div class="section-h">🧩 38. Transaction Profile (TP) &amp; Personal Information Form (PIF)</div>
+  <div class="vs-box">
+    <div class="vs-side left"><h4>📊 Transaction Profile (TP)</h4><ul>
+      <li>Records customer's <strong>normal transaction patterns</strong></li>
+      <li>Includes: account name &amp; number, monthly expected income</li>
+      <li>Expected deposits/withdrawals, max transaction limits</li>
+      <li>Purpose: detect unusual/suspicious activity (AML)</li>
+      <li>Banks monitor TP to flag deviations</li></ul></div>
+    <div class="vs-side right"><h4>📋 Personal Information Form (PIF)</h4><ul>
+      <li>Collects detailed customer data</li>
+      <li>NID, address, job, income, source of funds</li>
+      <li>Nominee information</li>
+      <li>Attached with main Account Opening Form (AOF)</li>
+      <li>Foundation for KYC compliance</li></ul></div>
+  </div>
+
+  <!-- Digital Account Opening -->
+  <div class="section-h">💻 39. Digital Account Opening (DAO)</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>Online method of opening a bank account using a mobile app or web platform — <strong>no branch visit required</strong>. Uses digital identity verification.</p>
+  </div>
+  <div class="example"><div class="ex-label">Example</div>
+    <p>BRAC Bank Astha Smart Account — scan your NID + take a selfie → instant account approval via the app. No paperwork, no branch visit needed.</p>
+  </div>
+
+  <!-- Contact Point Verification -->
+  <div class="section-h">📍 40. Contact Point Verification (CPV)</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>Physical <strong>field verification</strong> of customer data — identity, address, employment — conducted by bank agents to ensure all information provided is accurate and prevents fraud.</p>
+  </div>
+
+  <!-- Sanction & PEP Screening -->
+  <div class="section-h">🧠 41. Sanction &amp; PEP Screening</div>
+  <div class="highlight"><h4>Purpose</h4>
+    <ul>
+      <li>Ensures customers are <strong>not on international sanction lists</strong> (UN, OFAC, EU)</li>
+      <li>Identifies <strong>Politically Exposed Persons (PEPs)</strong> who require Enhanced Due Diligence</li>
+      <li>Protects banks from financial crime, money laundering, and corruption risk</li>
+      <li>Conducted during <strong>onboarding AND periodically thereafter</strong></li>
+    </ul>
+  </div>
+
+  <!-- Customer Acceptance Policy -->
+  <div class="section-h">🔍 42. Customer Acceptance Policy (CAP)</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>A bank's policy to <strong>prevent fake or risky clients</strong> from opening accounts. Banks verify background, country of origin, occupation, linked accounts, business activities, and purpose of account.</p>
+  </div>
+  <div class="example"><div class="ex-label">Rule</div>
+    <p>If a customer's identity or purpose is unclear → marked as <strong>suspicious</strong> and reported to Bangladesh Bank's Financial Intelligence Unit (FIU).</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODULE KYC: AML / KYC / BFIU -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section class="module" id="mod-kyc">
+  <div class="module-header">
+    <div class="module-icon" style="background:rgba(249,124,110,.15);">🔐</div>
+    <div class="module-title"><small>MODULE — KYC / AML</small>Know Your Customer &amp; Anti-Money Laundering</div>
+  </div>
+
+  <!-- Money Laundering -->
+  <div class="section-h">🚨 43. Money Laundering — Three Stages</div>
+  <div class="flow">
+    <div class="flow-step"><div class="step-num">STAGE 01</div><div class="step-name">🏦 Placement</div><div class="step-desc">Introducing illegal money into the financial system</div></div>
+    <div class="flow-step"><div class="step-num">STAGE 02</div><div class="step-name">🌀 Layering</div><div class="step-desc">Complex transactions to hide source</div></div>
+    <div class="flow-step"><div class="step-num">STAGE 03</div><div class="step-name">✅ Integration</div><div class="step-desc">Reintroducing as legitimate income or assets</div></div>
+  </div>
+
+  <!-- KYC -->
+  <div class="section-h">🔍 44. KYC — Know Your Customer</div>
+  <div class="def-block"><div class="def-label">Mandatory Under</div>
+    <p><strong>Money Laundering Prevention Act 2012</strong>. Banks must verify identity, address, source of funds, and tax info. Required when: opening new account, adding signatory/nominee, applying for locker or new loan.</p>
+  </div>
+
+  <!-- e-KYC -->
+  <div class="section-h">💻 45. Electronic KYC (e-KYC)</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p><strong>Digital verification</strong> using apps or database access instead of paper forms. Uses NID database, biometrics, and face recognition for instant identity verification.</p>
+  </div>
+  <div class="example"><div class="ex-label">Example</div>
+    <p>Using your NID + face scan through the <strong>bKash Smart Bank</strong> or <strong>Nagad</strong> app — no physical document submission required.</p>
+  </div>
+
+  <!-- Components of KYC -->
+  <div class="section-h">⚙️ 46. Components of a KYC Program</div>
+  <div class="cards cards-2">
+    <div class="card blue"><span class="card-icon">📋</span><h3>1. Customer Acceptance Policy (CAP)</h3><p>Defines which customers the bank will accept and sets risk appetite guidelines.</p></div>
+    <div class="card gold"><span class="card-icon">🆔</span><h3>2. Customer Identification</h3><p>Verifying identity through NID, passport, driving licence, photos, and address proof.</p></div>
+    <div class="card green"><span class="card-icon">📊</span><h3>3. Ongoing Monitoring</h3><p>Continuously monitoring high-risk accounts and transactions for suspicious patterns.</p></div>
+    <div class="card red"><span class="card-icon">📝</span><h3>4. Reporting Suspicious Transactions</h3><p>Filing STRs/SARs to BFIU/FIU whenever suspicious activity is detected.</p></div>
+  </div>
+
+  <!-- CDD / EDD -->
+  <div class="section-h">🔎 47. CDD &amp; EDD</div>
+  <div class="vs-box">
+    <div class="vs-side left"><h4>📋 CDD — Customer Due Diligence</h4><ul>
+      <li>Collect &amp; verify customer info (name, ID, address, DOB)</li>
+      <li>Assess money-laundering risk level</li>
+      <li>Rate each customer: Low / Medium / High risk</li>
+      <li>Applied to all customers at onboarding</li></ul></div>
+    <div class="vs-side right"><h4>🔎 EDD — Enhanced Due Diligence</h4><ul>
+      <li>Applied for <strong>high-risk customers</strong> and PEPs</li>
+      <li>Verify source of funds in detail</li>
+      <li>Monitor activity intensively</li>
+      <li>Requires senior-level approval</li>
+      <li><em>Foreign investor USD account &gt; Tk.1 crore → EDD applies</em></li></ul></div>
+  </div>
+
+  <!-- PEP -->
+  <div class="section-h">🏛️ 48. Politically Exposed Persons (PEPs) / Influential Persons (IPs)</div>
+  <div class="highlight"><h4>Who are PEPs?</h4>
+    <p>People with high political or official positions who pose higher risk of corruption or money laundering. All PEP accounts require <strong>EDD and continuous monitoring</strong>.</p>
+  </div>
+  <div class="cards cards-3">
+    <div class="card purple"><span class="card-icon">🌐</span><h3>Foreign PEPs</h3><p>Foreign government officials, heads of state, senior politicians from other countries</p></div>
+    <div class="card gold"><span class="card-icon">🇧🇩</span><h3>Domestic PEPs (IPs)</h3><p>Ministers, MPs, judges, military officials, heads of state-owned enterprises in Bangladesh and their close relatives/associates</p></div>
+    <div class="card blue"><span class="card-icon">🌍</span><h3>International Org Heads</h3><p>Senior officials at international organisations (UN, World Bank, IMF, etc.)</p></div>
+  </div>
+
+  <!-- Beneficial Owner -->
+  <div class="section-h">👤 49. Beneficial Owner</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>The <strong>real person who benefits</strong> from a company or account, even if someone else's name appears on paper. Banks must identify them to prevent money laundering (AML) and terrorist financing (CFT).</p>
+  </div>
+  <div class="cards cards-3">
+    <div class="card green"><span class="card-icon">📊</span><h3>Owns 20%+ Shares</h3><p>Holds controlling stake in a company or business</p></div>
+    <div class="card blue"><span class="card-icon">🎮</span><h3>Controls the Company</h3><p>Directs decisions even without formal ownership on paper</p></div>
+    <div class="card purple"><span class="card-icon">🔄</span><h3>Transacts for Another</h3><p>Conducts banking transactions on behalf of the real beneficiary</p></div>
+  </div>
+
+  <!-- BFIU -->
+  <div class="section-h">🏢 50. BFIU — Bangladesh Financial Intelligence Unit</div>
+  <div class="def-block"><div class="def-label">Role</div>
+    <p>Central agency combating <strong>Money Laundering (ML), Terrorist Financing (TF), and Financing of Proliferation (PF)</strong> of weapons of mass destruction in Bangladesh.</p>
+  </div>
+  <div class="key-points">
+    <div class="kp"><div class="kp-icon">📥</div><div class="kp-text"><h4>Receive &amp; Analyze STRs / SARs</h4>
+      <p>Suspicious Transaction Reports and Suspicious Activity Reports from all reporting organizations</p></div></div>
+    <div class="kp"><div class="kp-icon">🔍</div><div class="kp-text"><h4>Produce Financial Intelligence</h4>
+      <p>Analyze reports and share intelligence with law enforcement agencies for prosecution</p></div></div>
+    <div class="kp"><div class="kp-icon">🌐</div><div class="kp-text"><h4>International Cooperation</h4>
+      <p>Exchange financial intelligence information with foreign FIUs globally</p></div></div>
+    <div class="kp"><div class="kp-icon">📊</div><div class="kp-text"><h4>Supervise AML/CFT Compliance</h4>
+      <p>Oversee compliance of all reporting organizations: banks, insurance, money changers, remittance providers, NBFIs</p></div></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODULE B: NEGOTIABLE INSTRUMENTS -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section class="module" id="mod-b">
+  <div class="module-header">
+    <div class="module-icon" style="background:rgba(88,196,245,.15);">🧾</div>
+    <div class="module-title"><small>MODULE B</small>Negotiable Instruments Act, 1881</div>
+  </div>
+
+  <!-- Three Instruments -->
+  <div class="section-h">📜 51. Three Negotiable Instruments</div>
+  <div class="cards cards-3">
+    <div class="card blue"><span class="card-icon">📝</span><h3>Promissory Note</h3>
+      <p>Written <strong>promise</strong> by maker to pay a certain sum to the payee.</p>
+      <div style="margin-top:10px;background:rgba(0,0,0,.3);border-radius:8px;padding:8px 12px;font-size:13px;font-style:italic;color:var(--muted)">"I promise to pay Rahim or order Tk. 500"</div>
+      <div style="margin-top:8px"><span class="badge badge-blue">2 parties</span> <span class="badge badge-green">No acceptance</span></div></div>
+    <div class="card gold"><span class="card-icon">💼</span><h3>Bill of Exchange</h3>
+      <p>Written <strong>order</strong> from drawer to drawee to pay money to payee. Used in international trade.</p>
+      <div style="margin-top:8px"><span class="badge badge-gold">3 parties</span> <span class="badge badge-red">Requires acceptance</span></div></div>
+    <div class="card green"><span class="card-icon">✅</span><h3>Cheque</h3>
+      <p>Bill of exchange drawn <strong>on a bank</strong>, payable on demand.</p>
+      <p style="margin-top:8px;font-size:14px"><strong style="color:var(--cream)">Drawer</strong> → writes | <strong style="color:var(--cream)">Drawee</strong> → bank | <strong style="color:var(--cream)">Payee</strong> → receives</p></div>
+  </div>
+
+  <!-- Prom Note vs Bill -->
+  <div class="section-h">⚖️ 52. Promissory Note vs Bill of Exchange</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Points</th><th>Promissory Note</th><th>Bill of Exchange</th></tr></thead>
+    <tbody>
+      <tr><td>No. of Parties</td><td>Two — Maker &amp; Payee</td><td>Three — Drawer, Drawee, Payee</td></tr>
+      <tr><td>Nature</td><td>Contains a <em>promise</em> to pay</td><td>Contains an <em>order</em> to pay</td></tr>
+      <tr><td>Acceptance</td><td>No acceptance needed</td><td>Must be accepted by Drawee</td></tr>
+      <tr><td>Primary Liability</td><td>Maker is primarily liable</td><td>Drawer liable only if Drawee defaults</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- Cheque Types -->
+  <div class="section-h">🗓️ 53. Types of Cheques</div>
+  <div class="cards cards-3">
+    <div class="card blue"><span class="card-icon">⏮️</span><h3>Ante-Dated</h3><p>Written with an <strong>earlier date</strong> than actual writing date.</p><div class="example" style="margin-top:8px"><div class="ex-label">Example</div><p>Written April 29, dated April 20</p></div></div>
+    <div class="card gold"><span class="card-icon">⏭️</span><h3>Post-Dated</h3><p>Dated in the <strong>future</strong>. Valid only on or after that date.</p><div class="example" style="margin-top:8px"><div class="ex-label">Example</div><p>Written Nov 20, dated Dec 15</p></div></div>
+    <div class="card red"><span class="card-icon">🗑️</span><h3>Stale Cheque</h3><p>Older than <strong>6 months</strong> from issue date — becomes invalid and must be dishonoured.</p></div>
+  </div>
+
+  <!-- Holder & HDC -->
+  <div class="section-h">👤 54. Holder vs Holder in Due Course (HDC) vs Holder for Value (HFV)</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Concept</th><th>Meaning</th><th>Protection</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td>Holder</td><td>Lawful possessor entitled to receive payment</td><td>Basic</td><td>Person holding a valid cheque</td></tr>
+      <tr><td>Holder in Due Course (HDC)</td><td>Obtains instrument in good faith, for value, without notice of defects</td><td>Full legal protection</td><td>Himel receives cheque honestly — even if later found fraudulent, Himel can still claim</td></tr>
+      <tr><td>Holder for Value (HFV)</td><td>Gave value but may not meet all HDC conditions</td><td>Weaker than HDC</td><td>Fayan takes promissory note as debt repayment but later learns it's forged — cannot claim</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- Payment in Due Course -->
+  <div class="section-h">💵 55. Payment in Due Course</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>Payment made by a bank <strong>according to the instrument's terms</strong>, in good faith, without negligence, and to the right person. Even if later found invalid, the bank is <strong>not liable</strong> if it paid in due course.</p>
+  </div>
+
+  <!-- Inland Instrument -->
+  <div class="section-h">🇧🇩 56. Inland Instrument</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>A promissory note, bill of exchange, or cheque that is <strong>drawn and payable within the same country</strong>.</p>
+  </div>
+  <div class="example"><div class="ex-label">Example</div>
+    <p>Cheque drawn at BRAC Bank Dhaka, payable at EBL Chittagong — entirely within Bangladesh = inland instrument.</p>
+  </div>
+
+  <!-- Endorsement -->
+  <div class="section-h">✍️ 57. Endorsement</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>Signing the <strong>back of a cheque or bill</strong> to transfer ownership/title to another person. The <em>endorser</em> signs; the <em>endorsee</em> receives it.</p>
+  </div>
+  <div class="example"><div class="ex-label">Example</div>
+    <p>A gives cheque to B. B signs the back and gives to C. C is now the new holder with full rights to collect payment. This chain: A → B → C creates a transfer of title.</p>
+  </div>
+
+  <!-- Material Alteration -->
+  <div class="section-h">⚠️ 58. Material Alteration</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>An <strong>unauthorised change</strong> to key terms of a negotiable instrument (amount, date, payee, etc.). It <strong>invalidates the document</strong> unless all parties consent.</p>
+  </div>
+  <div class="example"><div class="ex-label">Example</div>
+    <p>Changing Tk.500 to Tk.1,000 without the drawer's consent = material alteration → cheque becomes void.</p>
+  </div>
+  <div class="highlight"><h4>📌 Note: Bearer → Order is NOT Material Alteration</h4>
+    <p>Changing "bearer" to "order" only adds safety. It does NOT invalidate the cheque. The drawer must still pay.</p>
+  </div>
+
+  <!-- Collecting Bank vs Paying Banker -->
+  <div class="section-h">🏦 59. Collecting Bank vs Paying Banker</div>
+  <div class="vs-box">
+    <div class="vs-side left"><h4>🏦 Collecting Bank</h4><ul>
+      <li>Bank that <strong>collects cheque amount</strong> for its customer from the paying bank</li>
+      <li>Receives cheque, verifies, sends for clearing</li>
+      <li>Credits customer account on realisation</li>
+      <li><em>Mr. B deposits cheque at Bank X → Bank X collects from Bank Y</em></li></ul></div>
+    <div class="vs-side right"><h4>💳 Paying Banker</h4><ul>
+      <li>Bank on which the cheque is <strong>drawn — makes the payment</strong></li>
+      <li>Verifies signature, balance, stop payment</li>
+      <li>Debits drawer's account</li>
+      <li><em>Mr. A writes cheque on Bank Y → Bank Y is the paying banker</em></li></ul></div>
+  </div>
+
+  <!-- Duties of Paying Bank -->
+  <div class="section-h">📋 60. Duties of the Paying Bank</div>
+  <div class="cards cards-2">
+    <div class="card blue"><span class="card-icon">✅</span><h3>Core Duties</h3><ul>
+      <li>Payment processing of valid instruments</li>
+      <li>Fund verification before payment</li>
+      <li>Transaction accuracy check</li>
+      <li>Fraud prevention and detection</li></ul></div>
+    <div class="card gold"><span class="card-icon">⚖️</span><h3>Legal Duties</h3><ul>
+      <li>Right to debit customer account</li>
+      <li>Maintain customer confidentiality</li>
+      <li>Comply with AML/CFT laws</li>
+      <li>Good faith protection when payment is genuine</li></ul></div>
+  </div>
+
+  <!-- Duties of Collecting Bank -->
+  <div class="section-h">📋 61. Duties of the Collecting Bank</div>
+  <div class="cards cards-2">
+    <div class="card green"><span class="card-icon">📥</span><h3>Operational Duties</h3><ul>
+      <li>Receive &amp; process incoming cheques</li>
+      <li>Clearing &amp; settlement process</li>
+      <li>Communication with paying bank</li>
+      <li>Documentation &amp; follow-up</li></ul></div>
+    <div class="card purple"><span class="card-icon">🛡️</span><h3>Protection Duties</h3><ul>
+      <li>Security &amp; compliance checks</li>
+      <li>Mediation and negotiation if disputes arise</li>
+      <li>Escalation of complex issues</li>
+      <li>Protect customer interests throughout</li></ul></div>
+  </div>
+
+  <!-- When Bank Refuses -->
+  <div class="section-h">❌ 62. When Can Bank Refuse a Cheque?</div>
+  <div class="cards cards-2">
+    <div class="card red"><ul>
+      <li>Insufficient funds in account</li>
+      <li>Account frozen or stopped</li>
+      <li>Signature does not match specimen</li>
+      <li>Stop payment instruction received</li>
+    </ul></div>
+    <div class="card red"><ul>
+      <li>Stale cheque (older than 6 months)</li>
+      <li>Post-dated (future date not yet reached)</li>
+      <li>Material alteration detected</li>
+      <li>Drawer deceased/mentally incapacitated</li>
+    </ul></div>
+  </div>
+
+  <!-- Positive Pay -->
+  <div class="section-h">✅ 63. Positive Pay Instruction</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>A <strong>fraud prevention system</strong> where the customer submits cheque details (number, amount, date, payee) to the bank in advance. Bank cross-verifies before clearing. Any mismatch triggers a hold.</p>
+  </div>
+
+  <!-- Hundi -->
+  <div class="section-h">💸 64. Hundi</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>A <strong>traditional informal money-transfer method</strong> in South Asia. NOT a legally enforceable negotiable instrument.</p>
+  </div>
+  <div class="vs-box">
+    <div class="vs-side left"><h4>✅ Positive Impact</h4><ul>
+      <li>Helps migrant workers send money easily</li>
+      <li>Fast and accessible in remote areas</li>
+      <li>Lower transaction costs</li></ul></div>
+    <div class="vs-side right"><h4>❌ Negative Impact</h4><ul>
+      <li>Promotes money laundering</li>
+      <li>Enables tax evasion</li>
+      <li>Loss of government foreign exchange revenue</li></ul></div>
+  </div>
+
+  <!-- Garnishee Order -->
+  <div class="section-h">⚖️ 65. Garnishee Order</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>A <strong>court order</strong> allowing a creditor to collect a debtor's money directly from a third party (like a bank or employer) without the debtor's involvement.</p>
+  </div>
+  <div class="example"><div class="ex-label">Example</div>
+    <p>A court orders a bank to deduct loan repayments directly from a customer's salary account each month — the customer cannot stop this deduction.</p>
+  </div>
+
+  <!-- Cheque vs Draft -->
+  <div class="section-h">🧾 66. Cheque vs Bank Draft</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Feature</th><th>Cheque</th><th>Bank Draft</th></tr></thead>
+    <tbody>
+      <tr><td>Issued by</td><td>Account holder</td><td>Bank itself</td></tr>
+      <tr><td>Guarantee</td><td>May bounce if insufficient funds</td><td>Guaranteed payment</td></tr>
+      <tr><td>Use</td><td>Everyday payments</td><td>Secure / large payments</td></tr>
+      <tr><td>Money Source</td><td>From issuer's account</td><td>Pre-paid to bank</td></tr>
+      <tr><td>Risk of Dishonour</td><td>Yes</td><td>No</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODULE C: FOREIGN EXCHANGE -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section class="module" id="mod-c">
+  <div class="module-header">
+    <div class="module-icon" style="background:rgba(126,232,162,.15);">💱</div>
+    <div class="module-title"><small>MODULE C</small>Foreign Exchange &amp; Trade Finance</div>
+  </div>
+
+  <div class="section-h">🌍 67. FERA 1947 &amp; Authorised Dealer Banks</div>
+  <div class="cards cards-2">
+    <div class="card green"><span class="card-icon">🌍</span><h3>Foreign Exchange Regulation Act (FERA) 1947</h3>
+      <p>Controls all foreign-currency dealings in Bangladesh — trade payments, remittances, import/export of currency &amp; gold, and foreign investment.</p>
+      <div class="example" style="margin-top:10px"><div class="ex-label">Example</div><p>Student sending tuition fees abroad → FERA rules ensure it's a legal, recorded transaction via an AD bank.</p></div></div>
+    <div class="card blue"><span class="card-icon">🏦</span><h3>Authorised Dealer (AD) Banks</h3>
+      <p>Banks licensed by Bangladesh Bank to handle foreign exchange — buy/sell currencies, manage LCs, issue student files.</p>
+      <p style="margin-top:8px"><span class="badge badge-blue">BRAC Bank</span> <span class="badge badge-blue">City Bank</span> <span class="badge badge-blue">Standard Chartered</span></p></div>
+  </div>
+
+  <div class="section-h">📦 68. Key Trade Finance Documents</div>
+  <div class="cards cards-2">
+    <div class="card gold"><span class="card-icon">🚢</span><h3>Bill of Lading (B/L)</h3>
+      <p>Legal shipping document proving goods were received by the carrier. Acts as: receipt, contract of carriage, and title document.</p>
+      <div style="margin-top:8px"><span class="badge badge-gold">Straight B/L — fixed buyer</span> <span class="badge badge-purple">Order B/L — transferable</span></div></div>
+    <div class="card teal"><span class="card-icon">📄</span><h3>Bill Entry</h3>
+      <p>Declaration form submitted to customs listing imported/exported goods — quantity, price, origin — so customs can calculate taxes.</p></div>
+    <div class="card purple"><span class="card-icon">🚆</span><h3>Railway Receipt (RR)</h3>
+      <p>Proof that goods were handed to the railway for transport. Transferable — functions like a title document.</p>
+      <div class="example" style="margin-top:8px"><div class="ex-label">Example</div><p>Khulna jute mill ships to Chittagong port → railway issues RR as proof</p></div></div>
+    <div class="card blue"><span class="card-icon">📚</span><h3>Banker's Book</h3>
+      <p>Official bank records — ledgers, journals, customer statements. Used as <strong>legal evidence in court</strong>.</p></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODULE D: DIGITAL BANKING -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section class="module" id="mod-d">
+  <div class="module-header">
+    <div class="module-icon" style="background:rgba(198,120,221,.15);">💻</div>
+    <div class="module-title"><small>MODULE D</small>Digital Banking &amp; Payment Systems</div>
+  </div>
+
+  <!-- Internet Banking -->
+  <div class="section-h">🌐 69. Internet Banking</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>Banking through websites or mobile apps — fund transfers, bill payments, balance checks, statements, and more — <strong>without visiting a branch</strong>.</p>
+  </div>
+  <div class="example"><div class="ex-label">Example</div>
+    <p>Mr. A pays his electricity bill via the bank's mobile app without leaving his house. He also transfers money to another bank account instantly.</p>
+  </div>
+
+  <!-- Standing Instructions -->
+  <div class="section-h">📋 70. Standing Instructions</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>Instructions given by the customer to the bank to make <strong>automatic periodic transactions</strong> on their behalf without needing to contact the bank each time.</p>
+  </div>
+  <div class="cards cards-2">
+    <div class="card blue"><span class="card-icon">🔄</span><h3>Common Uses</h3><ul>
+      <li>Life insurance premium payments</li>
+      <li>Utility bill payments (electricity, gas)</li>
+      <li>Transfer to savings/DPS account</li>
+      <li>Dividend or pension collection</li></ul></div>
+    <div class="card gold"><span class="card-icon">✅</span><h3>Benefits</h3><ul>
+      <li>Never miss a payment deadline</li>
+      <li>Saves time and effort</li>
+      <li>Reduces risk of late fees</li>
+      <li>Automatic and hassle-free</li></ul></div>
+  </div>
+
+  <!-- Stop Payment -->
+  <div class="section-h">🛑 71. Stop Payment Instruction</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>Customer requests the bank <strong>NOT to clear a specific cheque</strong> before it is processed. Used when a cheque is lost, stolen, or wrongly issued.</p>
+  </div>
+  <div class="highlight"><h4>⚠️ Important</h4>
+    <p>Stop payment must be placed <strong>before the cheque is presented</strong> for payment. Once paid in due course, it cannot be reversed.</p>
+  </div>
+
+  <!-- Dormant Accounts -->
+  <div class="section-h">😴 72. Dormant Accounts</div>
+  <div class="highlight"><h4>⏳ When Does an Account Become Dormant?</h4>
+    <ul>
+      <li><strong>Current/SND accounts</strong> → dormant after <strong>6 months</strong> of no transactions</li>
+      <li><strong>Savings accounts</strong> → dormant after <strong>18 months</strong> of no transactions</li>
+      <li><strong>Dormant for 5 years</strong> → full new KYC required to reactivate</li>
+      <li><strong>Unclaimed for 10 years</strong> → balance transferred to Bangladesh Bank</li>
+    </ul>
+  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Consequence</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td>Cheque Book</td><td>Not issued for dormant accounts</td></tr>
+      <tr><td>ATM / Internet Access</td><td>Blocked</td></tr>
+      <tr><td>Signature Modification</td><td>Not allowed until reactivated</td></tr>
+      <tr><td>Reactivation Process</td><td>Fill form, provide 2 passport photos, valid ID, proof of address</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- Unclaimed Deposits -->
+  <div class="section-h">💤 73. Unclaimed Deposit Accounts</div>
+  <div class="def-block"><div class="def-label">Rule</div>
+    <p>If a customer cannot be traced after long inactivity, the bank <strong>transfers the balance to Bangladesh Bank</strong> as Unclaimed Deposit Account. All unclaimed deposits/valuables after <strong>10 years</strong> go to Bangladesh Bank (under Banking Company Act Section 35).</p>
+  </div>
+
+  <!-- Closing an Account -->
+  <div class="section-h">❌ 74. Closing an Account</div>
+  <div class="def-block"><div class="def-label">Procedure</div>
+    <p>Done by written notice or account closure form. Bank returns remaining balance + any accrued interest, deducting applicable charges. Customer must return cheque books, debit cards, and any other instruments.</p>
+  </div>
+
+  <!-- Payment Systems -->
+  <div class="section-h">⚡ 75. National Payment Infrastructure</div>
+  <div class="cards cards-2">
+    <div class="card blue"><span class="card-icon">🏦</span><h3>BACH — Bangladesh Automated Clearing House</h3>
+      <p>National electronic clearing &amp; settlement system, run by Bangladesh Bank. Two components:</p>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <div style="background:rgba(88,196,245,.1);border:1px solid rgba(88,196,245,.2);border-radius:8px;padding:8px 12px;font-size:13px"><strong style="color:var(--a)">BACPS</strong><br><span style="color:var(--muted)">Image-based cheque clearing</span></div>
+        <div style="background:rgba(88,196,245,.1);border:1px solid rgba(88,196,245,.2);border-radius:8px;padding:8px 12px;font-size:13px"><strong style="color:var(--a)">BEFTN</strong><br><span style="color:var(--muted)">Electronic fund transfers</span></div>
+      </div></div>
+    <div class="card green"><span class="card-icon">⚡</span><h3>RTGS — Real-Time Gross Settlement</h3>
+      <p>Transfers <strong>high-value funds instantly</strong>. BB debits sender and credits receiver in real time — no waiting, no batching.</p>
+      <ul style="margin-top:8px"><li>🕒 Real-time settlement</li><li>🔒 Secure — direct</li><li>💡 Transparent notifications</li><li>⚖️ Reduced systemic risk</li></ul></div>
+    <div class="card purple"><span class="card-icon">🔄</span><h3>NPSB — National Payment Switch Bangladesh</h3>
+      <p>Integrates ATMs, POS, and internet banking across 50+ banks — one card works at any member bank's ATM nationwide.</p></div>
+    <div class="card orange"><span class="card-icon">📱</span><h3>MFS — Mobile Financial Services</h3>
+      <p>A mini bank on your phone. Send/receive money, pay bills, save, microloans.</p>
+      <p style="margin-top:8px"><span class="badge badge-gold">bKash</span> <span class="badge badge-gold">Nagad</span> <span class="badge badge-gold">Rocket</span></p></div>
+  </div>
+
+  <!-- Corporate EFT -->
+  <div class="section-h">⚙️ 76. Corporate EFT (Electronic Fund Transfer)</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>Used for <strong>bulk government or corporate payments</strong> — salaries, taxes, vendor payments — enabling automatic updates of receivable/payable accounts without manual processing.</p>
+  </div>
+
+  <!-- BEFTN Participants -->
+  <div class="section-h">🔁 77. BEFTN — Participants in the System</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Participant</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td>Originator</td><td>The person/entity initiating the fund transfer</td></tr>
+      <tr><td>Originating Bank (OB)</td><td>Bank of the originator — sends the transfer instruction</td></tr>
+      <tr><td>BEFTN Operator</td><td>Bangladesh Bank — processes and routes all EFT transactions</td></tr>
+      <tr><td>Receiving Bank (RB)</td><td>Bank of the receiver — credits the beneficiary's account</td></tr>
+      <tr><td>Receiver</td><td>The final beneficiary of the fund transfer</td></tr>
+      <tr><td>Correspondent Bank</td><td>Intermediary bank involved in cross-bank settlements</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- RFFO -->
+  <div class="section-h">🧭 78. RFFO — Regulatory FinTech Facilitation Office</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>Bangladesh Bank's body <strong>promoting FinTech innovation</strong> — enabling safe digital transformation of the financial sector while reducing risk and increasing efficiency and financial inclusion.</p>
+  </div>
+
+  <!-- Special Accounts (repeated in digital context) -->
+  <div class="section-h">🌾 79. Special Account Types</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Account</th><th>Minimum Deposit</th><th>Documents Required</th><th>Reporting</th></tr></thead>
+    <tbody>
+      <tr><td>Farmer's Account</td><td>BDT 10</td><td>NID/Birth Certificate + Agri Equipment Card</td><td>To BB periodically</td></tr>
+      <tr><td>Hardcore Poor Account</td><td>BDT 10</td><td>NID + Ministry of Food Registration Card</td><td>State-owned banks only</td></tr>
+      <tr><td>Garments Workers' Account</td><td>BDT 100</td><td>Employee ID + NID</td><td>Quarterly to BB</td></tr>
+      <tr><td>School Banking (Minor)</td><td>None required</td><td>Birth Certificate + Guardian NID</td><td>Interest paid quarterly</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- Excise Duty -->
+  <div class="section-h">🧾 80. Excise Duty on Bank Accounts (SRO No.143/2020)</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Highest Balance (Tk)</th><th>Annual Excise Duty (Tk)</th></tr></thead>
+    <tbody>
+      <tr><td>0 – 1,00,000</td><td><span class="badge badge-green">Nil</span></td></tr>
+      <tr><td>1,00,001 – 5,00,000</td><td>150</td></tr>
+      <tr><td>5,00,001 – 10,00,000</td><td>500</td></tr>
+      <tr><td>10,00,001 – 1,00,00,000</td><td>3,000</td></tr>
+      <tr><td>1,00,00,001 – 5,00,00,000</td><td>15,000</td></tr>
+      <tr><td>5,00,00,001+</td><td>40,000</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODULE CASH: CASH MANAGEMENT -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section class="module" id="mod-cash">
+  <div class="module-header">
+    <div class="module-icon" style="background:rgba(126,232,162,.15);">💵</div>
+    <div class="module-title"><small>MODULE E/F</small>Cash Management</div>
+  </div>
+
+  <!-- Demand vs Time Liabilities -->
+  <div class="section-h">📊 81. Demand &amp; Time Liabilities</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Type</th><th>Meaning</th><th>Examples</th></tr></thead>
+    <tbody>
+      <tr><td>Demand Liabilities</td><td>Withdrawable anytime without notice</td><td>Savings A/C, Current A/C, Demand Drafts</td></tr>
+      <tr><td>Time Liabilities</td><td>Repayable after fixed maturity period</td><td>Fixed Deposits, Recurring Deposits, Certificates of Deposit</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- Cash Shortage -->
+  <div class="section-h">📉 82. Cash Shortage Procedure</div>
+  <div class="key-points">
+    <div class="kp"><div class="kp-icon">💸</div><div class="kp-text"><h4>Immediate Action</h4>
+      <p>If shortage found at day-end → <strong>teller must pay the difference immediately</strong> from personal funds.</p></div></div>
+    <div class="kp"><div class="kp-icon">📋</div><div class="kp-text"><h4>If Not Immediately Possible</h4>
+      <p>Adjust from cash <strong>security deposit within 3 days</strong>. Record the shortage with full details.</p></div></div>
+    <div class="kp"><div class="kp-icon">📝</div><div class="kp-text"><h4>Larger Shortages</h4>
+      <p>Report to <strong>higher authority</strong> with full written report and register entry. Must be signed by <strong>Manager + Second Officer</strong>.</p></div></div>
+  </div>
+
+  <!-- Cash Excess -->
+  <div class="section-h">📈 83. Cash Excess Procedure</div>
+  <div class="flow">
+    <div class="flow-step"><div class="step-num">STEP 1</div><div class="step-name">🔢 Recount</div><div class="step-desc">Recount separately: receiving cashier, paying cashier, and safe</div></div>
+    <div class="flow-step"><div class="step-num">STEP 2</div><div class="step-name">💻 Check Entries</div><div class="step-desc">Cross-check computer entries and journal</div></div>
+    <div class="flow-step"><div class="step-num">STEP 3</div><div class="step-name">📒 Credit A/P</div><div class="step-desc">Credit to Accounts Payable, debit from Cash in Hand</div></div>
+    <div class="flow-step"><div class="step-num">STEP 4</div><div class="step-name">👔 Manager</div><div class="step-desc">Manager settles if within limit and genuine</div></div>
+    <div class="flow-step"><div class="step-num">STEP 5</div><div class="step-name">⏳ 3 Months</div><div class="step-desc">If unclaimed 3 months → transfer to Sundry Income</div></div>
+  </div>
+
+  <!-- Mutilated Notes -->
+  <div class="section-h">🗞️ 84. Mutilated Notes — Detailed Handling</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>Torn, damaged, dirty, or burnt notes with <strong>identifiable value</strong>. Must be sent to Bangladesh Bank or local office for examination.</p>
+  </div>
+  <div class="table-wrap" style="margin-bottom:12px"><table>
+    <thead><tr><th>Note Condition</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>Altered Note</td><td>Changes in number, signature, or value</td></tr>
+      <tr><td>Damp Note</td><td>Wet or fragile note</td></tr>
+      <tr><td>Deformed/Decomposed</td><td>Torn, disfigured, or decayed</td></tr>
+      <tr><td>Mismatched Note</td><td>Joined halves from different notes</td></tr>
+      <tr><td>Obliterated Note</td><td>Faded or illegible writing</td></tr>
+    </tbody>
+  </table></div>
+  <div class="highlight"><h4>📋 Handling Steps for Mutilated Notes</h4>
+    <ul>
+      <li>Bundle (100 notes) → stamp <strong>"Defective Notes"</strong> → send to Bangladesh Bank</li>
+      <li>Branch representative must be present during counting</li>
+      <li>BB credits bank's account after verification</li>
+      <li>Rejected notes → value recovered from originating branch</li>
+      <li>Client applications for unexchangeable notes → send to BB for decision</li>
+    </ul>
+  </div>
+
+  <!-- A-Challan & E-Challan -->
+  <div class="section-h">🧾 85. A-Challan &amp; E-Challan</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Type</th><th>Description</th><th>Usage</th></tr></thead>
+    <tbody>
+      <tr><td>A-Challan</td><td>Paper document for depositing govt tax/VAT/customs fees through banks</td><td>Physical branch deposit of govt dues</td></tr>
+      <tr><td>E-Challan</td><td>Online version for digital payment of govt dues</td><td>Receipt generated electronically; no branch visit needed</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- Half Note -->
+  <div class="section-h">📄 86. Half Note (5th BPE) &amp; Refund</div>
+  <div class="def-block"><div class="def-label">Rule</div>
+    <p>A portion that is <strong>more than half of the original note</strong> is called a "half note." If presented for refund → treated as half value only. Claim valid only if largest piece is <strong>&gt;50% of original area</strong>.</p>
+  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Note Area Remaining</th><th>Refund Amount</th></tr></thead>
+    <tbody>
+      <tr><td>&gt; 90% of original area</td><td><span class="badge badge-green">Full value</span></td></tr>
+      <tr><td>50% – 90% of original area</td><td><span class="badge badge-gold">Proportionate value</span></td></tr>
+      <tr><td>&lt; 50% of original area</td><td><span class="badge badge-red">No refund</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- Security Features -->
+  <div class="section-h">🔐 87. Security Features of Genuine Banknotes</div>
+  <div class="revision-grid">
+    <div class="rv-card"><div class="rv-icon">📄</div><div class="rv-term">PAPER QUALITY</div><p>Special texture &amp; number shape different from normal paper</p></div>
+    <div class="rv-card"><div class="rv-icon">🧵</div><div class="rv-term">SECURITY THREAD</div><p>Embedded metallic strip within the paper — visible when held to light</p></div>
+    <div class="rv-card"><div class="rv-icon">🖐️</div><div class="rv-term">RAISED PRINTING</div><p>Intaglio printing — feel the raised texture on touch</p></div>
+    <div class="rv-card"><div class="rv-icon">🖼️</div><div class="rv-term">HIDDEN IMAGE</div><p>Hidden image visible only in the vertical band when tilted</p></div>
+    <div class="rv-card"><div class="rv-icon">💧</div><div class="rv-term">WATERMARK</div><p>Visible when held to light — portrait or denomination watermark</p></div>
+    <div class="rv-card"><div class="rv-icon">🔬</div><div class="rv-term">MICRO LETTERING</div><p>Tiny text visible only under magnification</p></div>
+    <div class="rv-card"><div class="rv-icon">🌈</div><div class="rv-term">OVI INK</div><p>Optically Variable Ink — colour changes at different viewing angles</p></div>
+    <div class="rv-card"><div class="rv-icon">💡</div><div class="rv-term">UV FLUORESCENT</div><p>Certain parts glow under ultraviolet (UV) light</p></div>
+  </div>
+
+  <!-- Fake Note Procedure -->
+  <div class="section-h">🚫 88. Fake Note Procedure</div>
+  <div class="flow">
+    <div class="flow-step"><div class="step-num">STEP 01</div><div class="step-name">🚨 Seize Note</div><div class="step-desc">Take the suspected fake note immediately</div></div>
+    <div class="flow-step"><div class="step-num">STEP 02</div><div class="step-name">📝 Record Details</div><div class="step-desc">Record presenter's details + signature/thumb impression</div></div>
+    <div class="flow-step"><div class="step-num">STEP 03</div><div class="step-name">📄 Written Statement</div><div class="step-desc">Take written statement from presenter</div></div>
+    <div class="flow-step"><div class="step-num">STEP 04</div><div class="step-name">👮 Police Report</div><div class="step-desc">Send note + statement to police. Police forwards to Currency Office.</div></div>
+  </div>
+
+  <!-- ATM Cash Management -->
+  <div class="section-h">🏧 89. ATM Cash Management</div>
+  <div class="vs-box">
+    <div class="vs-side left"><h4>🏦 On-Site ATMs</h4><ul>
+      <li>Located <strong>inside the branch</strong></li>
+      <li>Supervised directly by bank staff</li>
+      <li>Easier replenishment and monitoring</li>
+      <li>Lower outsourcing cost</li></ul></div>
+    <div class="vs-side right"><h4>🌍 Off-Site ATMs</h4><ul>
+      <li>Located <strong>outside the branch</strong> (malls, streets)</li>
+      <li>Managed by Managed Service Providers (MSPs)</li>
+      <li>Banks outsource cash loading and maintenance</li>
+      <li>Wider reach but higher outsourcing cost</li></ul></div>
+  </div>
+
+  <!-- Vault Cash Handling -->
+  <div class="section-h">🔐 90. Vault Cash Handling Procedure</div>
+  <div class="key-points">
+    <div class="kp"><div class="kp-icon">📋</div><div class="kp-text"><h4>Record Details</h4><p>Record denomination details of all notes and coins on vouchers before moving any cash.</p></div></div>
+    <div class="kp"><div class="kp-icon">👥</div><div class="kp-text"><h4>Dual Control — Manager + Cash Officer</h4><p>Cash is always moved in or out by <strong>Manager and Cash Officer together</strong> — never one person alone.</p></div></div>
+    <div class="kp"><div class="kp-icon">🔑</div><div class="kp-text"><h4>Dual Keys — Both Required</h4><p>Both must use their own separate keys to open the safe. <strong>Never allow one person to operate both keys.</strong></p></div></div>
+    <div class="kp"><div class="kp-icon">🚫</div><div class="kp-text"><h4>Authorised Key Holders Only</h4><p>Only authorised key holders can handle safe keys. Keys must never be shared, duplicated, or left unattended.</p></div></div>
+  </div>
+
+  <!-- Safe Deposit Locker -->
+  <div class="section-h">🔐 91. Safe Deposit Locker &amp; Safe Custody</div>
+  <div class="cards cards-3">
+    <div class="card green"><span class="card-icon">🛡️</span><h3>Safe Deposit Locker</h3><p>Rented secure space with <strong>dual keys</strong> (bank key + customer key). Both keys needed to open. Strict entry/exit control. Nothing illegal allowed.</p></div>
+    <div class="card blue"><span class="card-icon">📜</span><h3>Safe Custody</h3><p>Bank keeps important documents (Wills, Title Deeds, Contracts) for a fee. Sealed and stored — bank doesn't read contents.</p></div>
+    <div class="card purple"><span class="card-icon">🏆</span><h3>Benefits</h3><ul>
+      <li>Protection from theft, fire, flood</li>
+      <li>Confidentiality — key holders only</li>
+      <li>Long-term storage for heirlooms, deeds</li>
+      <li>Peace of mind and insurance</li></ul></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODULE OPS: BANK OPERATIONS -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section class="module" id="mod-ops">
+  <div class="module-header">
+    <div class="module-icon" style="background:rgba(245,166,35,.15);">⚙️</div>
+    <div class="module-title"><small>MODULE F</small>Bank Operations &amp; Controls</div>
+  </div>
+
+  <!-- DCFCL -->
+  <div class="section-h">📋 92. Departmental Control Function Checklist (DCFCL)</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>A structured checklist ensuring bank departments <strong>follow internal control procedures</strong>. Verified daily/weekly/monthly/quarterly by branch managers. Kept for inspection by Internal Control and Senior Management.</p>
+  </div>
+
+  <!-- Storage of Records -->
+  <div class="section-h">📂 93. Storage of Accounts Records</div>
+  <div class="key-points">
+    <div class="kp"><div class="kp-icon">📁</div><div class="kp-text"><h4>Physical Records</h4><p>Keep all records in <strong>good bindings and quality files/paper</strong>. Protect from rats, insects, and moisture. Attach supporting documents properly.</p></div></div>
+    <div class="kp"><div class="kp-icon">💾</div><div class="kp-text"><h4>Digital Records</h4><p>Take hard copies of computer records. Maintain <strong>backups</strong> (floppies/pen drives/secure server rooms) for disaster recovery.</p></div></div>
+  </div>
+
+  <!-- BCP -->
+  <div class="section-h">🏗️ 94. Business Continuity Plan (BCP)</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>A plan ensuring the bank can <strong>resume operations after a disaster or cyber-attack</strong> with minimal disruption. Includes data backup, recovery processes, remote work protocols, and off-site document storage.</p>
+  </div>
+
+  <!-- Documents & Vouchers -->
+  <div class="section-h">🧾 95. Documents &amp; Vouchers</div>
+  <div class="cards cards-2">
+    <div class="card blue"><span class="card-icon">📄</span><h3>Documents</h3><p>Cheques, bills, pay orders, vouchers — either digital (IT) or paper. Each transaction is recorded with supporting source documents.</p></div>
+    <div class="card gold"><span class="card-icon">📒</span><h3>Vouchers</h3><p>The <strong>source document for each transaction</strong>. Shows debit and credit sides. Must be signed by accountant + supervisor. Ensures authenticity and transparency during audits.</p></div>
+  </div>
+
+  <!-- Daily Statement of Affairs -->
+  <div class="section-h">📊 96. Daily Statement of Affairs / Income &amp; Expenditure</div>
+  <div class="def-block"><div class="def-label">Purpose</div>
+    <p>A <strong>snapshot of the bank's financial position</strong> (like a mini Balance Sheet) prepared daily. Helps management track progress, identify problems, and improve strategy in real time.</p>
+  </div>
+
+  <!-- General Ledger -->
+  <div class="section-h">📒 97. General Ledger (GL) Balancing</div>
+  <div class="def-block"><div class="def-label">Definition</div>
+    <p>The GL records all <strong>assets, liabilities, equity, income, and expenses</strong>. The accounting rule: Debits = Credits for balance. Reconciliation = comparing GL with statements to ensure accuracy and catch errors.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODULE LAW: BANKING LAWS -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section class="module" id="mod-law">
+  <div class="module-header">
+    <div class="module-icon" style="background:rgba(245,166,35,.15);">⚖️</div>
+    <div class="module-title"><small>MODULE — LAWS</small>Key Banking Laws &amp; Regulations</div>
+  </div>
+
+  <div class="law-card">
+    <div class="law-header"><div class="law-icon">🏛️</div><h3>Bangladesh Bank Order 1972</h3></div>
+    <div class="law-body">
+      <div class="cards cards-2">
+        <div>
+          <strong style="color:var(--gold)">Core Functions</strong>
+          <ul style="margin-top:8px;padding-left:18px;font-size:15px">
+            <li>Formulate &amp; implement monetary policy</li>
+            <li>Manage foreign exchange intervention</li>
+            <li>Advise Government on fiscal-monetary matters</li>
+            <li>Maintain foreign exchange reserves</li>
+            <li>Regulate &amp; supervise banking companies</li>
+            <li>Issue bank notes</li>
+            <li>Promote safe, efficient payment system</li>
+          </ul>
+        </div>
+        <div>
+          <strong style="color:var(--gold)">Board of Directors (Article 9)</strong>
+          <ul style="margin-top:8px;padding-left:18px;font-size:15px">
+            <li>Governor (Chair)</li>
+            <li>Deputy Governor (nominated by Bank)</li>
+            <li>Four Directors — non-govt officials with experience in banking/trade/commerce/industry/agriculture</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="law-card">
+    <div class="law-header"><div class="law-icon">🏦</div><h3>Banking Company Act 1991</h3></div>
+    <div class="law-body">
+      <div class="section-h" style="font-size:1rem;margin-top:0">Section 29 — Control of Advances</div>
+      <div class="highlight">
+        <h4>Bangladesh Bank can determine lending policy for all banks, including:</h4>
+        <ul>
+          <li>Credit ceilings</li><li>Minimum small loan ratio to total advances</li>
+          <li>Loan purpose restrictions</li><li>Interest rate guidance</li>
+          <li>Loan limit to any bank, group, or individual</li>
+        </ul>
+      </div>
+      <div class="section-h" style="font-size:1rem">Section 33(2) — SLR &amp; CRR</div>
+      <div class="vs-box">
+        <div class="vs-side left"><h4>💰 SLR — Statutory Liquidity Ratio</h4><ul>
+          <li>Cash/gold/securities held by bank</li>
+          <li><strong>Minimum: ≥ 13%</strong> of demand &amp; time liabilities</li>
+          <li>Ensures bank can meet withdrawal demand</li></ul></div>
+        <div class="vs-side right"><h4>🏦 CRR — Cash Reserve Ratio</h4><ul>
+          <li>Minimum cash kept with Bangladesh Bank</li>
+          <li><strong>Minimum: ≥ 5.5%</strong> of demand &amp; time liabilities</li>
+          <li>Controls money supply in economy</li></ul></div>
+      </div>
+      <div class="section-h" style="font-size:1rem">Maintenance of Capital — Tier 1 &amp; Tier 2</div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Tier</th><th>Name</th><th>Purpose</th><th>Components</th></tr></thead>
+        <tbody>
+          <tr><td>Tier 1</td><td>Going Concern Capital</td><td>Absorbs losses without bankruptcy</td><td>Paid-up capital, reserves, retained earnings (CET1 + AT1)</td></tr>
+          <tr><td>Tier 2</td><td>Gone Concern Capital</td><td>Absorbs losses during liquidation</td><td>Subordinated debts, general provisions</td></tr>
+        </tbody>
+      </table></div>
+      <div class="highlight" style="margin-top:12px"><h4>📌 Section 35 — Unclaimed Deposits</h4>
+        <p>Deposits &amp; valuables unclaimed for <strong>10 years</strong> must be transferred to Bangladesh Bank — even after reminders, if no trace of customer → transfer balance after 3-month notice.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="law-card">
+    <div class="law-header"><div class="law-icon">⚖️</div><h3>Artho Rin Adalat Ain 2003 (Money Loan Court Act)</h3></div>
+    <div class="law-body">
+      <div class="def-block" style="margin-top:0"><div class="def-label">Purpose</div>
+        <p>Speed up <strong>loan recovery &amp; financial dispute resolution</strong> between banks and borrowers through specialised loan courts.</p>
+      </div>
+      <div class="table-wrap" style="margin-top:12px"><table>
+        <thead><tr><th>Section</th><th>Title</th><th>Summary</th></tr></thead>
+        <tbody>
+          <tr><td>Sec 12</td><td>Notice for Repayment</td><td>Serve borrower written notice (min 15 days) demanding repayment</td></tr>
+          <tr><td>Sec 33</td><td>Certificate Application</td><td>If unpaid, banker applies to Deputy Commissioner for outstanding certificate</td></tr>
+          <tr><td>Sec 40</td><td>Right of Appeal</td><td>Can appeal to higher court within 30 days of decree</td></tr>
+          <tr><td>Sec 41</td><td>Limitation of Appeal</td><td>Only one appeal per decision allowed</td></tr>
+          <tr><td>Sec 42</td><td>Application for Revision</td><td>To High Court within 30 days of order</td></tr>
+          <tr><td>Sec 43</td><td>Limitation of Revision</td><td>Only one revision allowed per case</td></tr>
+          <tr><td>Sec 44</td><td>Stay of Proceedings</td><td>High Court can suspend case while appeal/revision is pending</td></tr>
+          <tr><td>Sec 46–47</td><td>Execution</td><td>Bank recovers dues via attachment/sale of movable or immovable property</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="law-card">
+    <div class="law-header"><div class="law-icon">💰</div><h3>Bank Deposit Insurance Act 2000</h3></div>
+    <div class="law-body">
+      <div class="cards cards-3">
+        <div class="card gold" style="margin:0"><span class="card-icon">🛡️</span><h3>Coverage</h3><p><strong>BDT 1,00,000</strong> per depositor per bank</p></div>
+        <div class="card blue" style="margin:0"><span class="card-icon">🏛️</span><h3>Manager</h3><p>Deposit Insurance Trust Fund (DITF) under Bangladesh Bank</p></div>
+        <div class="card green" style="margin:0"><span class="card-icon">💸</span><h3>Funding</h3><p>Banks pay premiums based on eligible deposit levels</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Primary vs Collateral -->
+  <div class="section-h">📊 Primary vs Collateral Security</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Type</th><th>Meaning</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td>Primary Security</td><td>Main asset purchased with the loan money</td><td>For a car loan → the car itself</td></tr>
+      <tr><td>Collateral Security</td><td>Additional backup asset pledged for extra protection</td><td>Borrower's land or FDR pledged alongside</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- Willful Defaulter -->
+  <div class="section-h">🚫 Willful Defaulter</div>
+  <div class="cards cards-2">
+    <div class="card red"><span class="card-icon">⚠️</span><h3>Definition &amp; Consequences</h3>
+      <p>A borrower who <strong>can pay but chooses not to</strong>. Consequences include:</p>
+      <ul style="margin-top:8px"><li>Legal cases filed</li><li>Property seizure</li><li>Blacklisting</li>
+        <li>Ban from new loans</li><li>Name published publicly</li></ul></div>
+    <div class="card orange"><span class="card-icon">🏢</span><h3>Sister Concerns Rule</h3>
+      <p>If one company of a group defaults, its other (sister) companies <strong>normally cannot get fresh loans</strong> from any bank.</p></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODULE COMPANY: COMPANY LAW & CONTRACT LAW -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section class="module" id="mod-company">
+  <div class="module-header">
+    <div class="module-icon" style="background:rgba(86,182,194,.15);">🏢</div>
+    <div class="module-title"><small>MODULE D — BUSINESS LAWS</small>Company Law, Contract Law &amp; Property Law</div>
+  </div>
+
+  <!-- Public vs Private -->
+  <div class="section-h">🏢 Public Ltd. vs Private Ltd. Company</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Feature</th><th>Public Ltd. Company</th><th>Private Ltd. Company</th></tr></thead>
+    <tbody>
+      <tr><td>Min Members</td><td>7 (no maximum)</td><td>2 (max 50)</td></tr>
+      <tr><td>Min Directors</td><td>At least 3</td><td>At least 2</td></tr>
+      <tr><td>IPO</td><td>Can issue shares to public</td><td>Cannot issue IPO</td></tr>
+      <tr><td>Statutory Meeting</td><td>Mandatory</td><td>Not required</td></tr>
+      <tr><td>Audit</td><td>Mandatory by audit firm</td><td>Not mandatory</td></tr>
+      <tr><td>Disclosure</td><td>Open to public</td><td>Private</td></tr>
+      <tr><td>Share Transfer</td><td>No restriction</td><td>Restricted</td></tr>
+      <tr><td>Commencement</td><td>Requires Certificate of Commencement</td><td>Incorporation certificate enough</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- MOA vs AOA -->
+  <div class="section-h">📜 MoA vs AoA</div>
+  <div class="vs-box">
+    <div class="vs-side left"><h4>📋 Memorandum of Association (MoA)</h4><ul>
+      <li>Defines company's <em>identity &amp; external relations</em></li>
+      <li>Company name &amp; registered office address</li>
+      <li>Objectives and scope of business</li>
+      <li>Limited liability clause</li>
+      <li>Share capital &amp; subscriber details + signatures</li></ul></div>
+    <div class="vs-side right"><h4>📋 Articles of Association (AoA)</h4><ul>
+      <li>Governs <em>internal management &amp; operations</em></li>
+      <li>Director rules, meetings, audits, accounts</li>
+      <li>Prospectus or statement in lieu</li>
+      <li>Compliance declarations</li>
+      <li>Min subscription &amp; qualifying shares</li>
+      <li>Certificate of Commencement requirement</li></ul></div>
+  </div>
+
+  <!-- OPC -->
+  <div class="section-h">🧑 One Person Company (OPC)</div>
+  <div class="highlight"><h4>📌 Key Facts about OPC</h4>
+    <ul>
+      <li>Introduced in <strong>2020 amendment</strong> (effective May 2021)</li>
+      <li>Allows a <strong>single person</strong> to form a company with limited liability</li>
+      <li>Must include <strong>"One Person Company (OPC)"</strong> in its name</li>
+      <li>Governed by Companies Act 1994 (amended)</li>
+      <li>Rules cover registration, capital, share transfer, and winding up</li>
+    </ul>
+  </div>
+
+  <!-- Types of Shares -->
+  <div class="section-h">📊 Types of Shares (Public Ltd.)</div>
+  <div class="cards cards-2">
+    <div class="card blue"><span class="card-icon">🗳️</span><h3>Ordinary / Equity Share</h3>
+      <p>Common ownership with <strong>full voting rights</strong>. Shareholders share in profits (dividends) and losses. Residual claimants in liquidation.</p></div>
+    <div class="card gold"><span class="card-icon">⭐</span><h3>Preference Share</h3>
+      <p><strong>Priority on dividends</strong> and liquidation proceeds before ordinary shareholders.</p>
+      <ul style="margin-top:8px">
+        <li><strong>Convertible:</strong> Can be converted to ordinary shares at a fixed rate</li>
+        <li><strong>Non-convertible:</strong> Cannot be converted — stays as preference share</li>
+      </ul></div>
+  </div>
+
+  <!-- Penalties -->
+  <div class="section-h">⚠️ Penalties Under Companies Act 1994</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Offence</th><th>Penalty</th></tr></thead>
+    <tbody>
+      <tr><td>False Statement in documents</td><td>Imprisonment up to <strong>5 years</strong> + fine</td></tr>
+      <tr><td>Falsification of Books (destroying/altering records)</td><td>Imprisonment up to <strong>7 years</strong> + fine</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- Winding Up -->
+  <div class="section-h">🔚 Winding-Up of a Company</div>
+  <div class="cards cards-3">
+    <div class="card red"><span class="card-icon">⚖️</span><h3>By Court</h3><p>Court orders the company wound up — e.g., unable to pay debts, fraudulent activities.</p></div>
+    <div class="card gold"><span class="card-icon">🙋</span><h3>Voluntary</h3><p>Company members/directors decide to wind up voluntarily — solvent or insolvent.</p></div>
+    <div class="card blue"><span class="card-icon">👁️</span><h3>Under Court Supervision</h3><p>Voluntary winding up subject to court supervision at any time.</p></div>
+  </div>
+
+  <!-- Contract Act -->
+  <div class="section-h">⚖️ Agreement vs Contract</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Basis</th><th>Agreement</th><th>Contract</th></tr></thead>
+    <tbody>
+      <tr><td>Definition</td><td>Promise(s) forming consideration (Sec 2e)</td><td>Legally enforceable agreement (Sec 2h)</td></tr>
+      <tr><td>Legal Obligation</td><td>May or may not create one</td><td>Always creates legal obligation</td></tr>
+      <tr><td>Enforceability</td><td>Not necessarily enforceable</td><td>Always enforceable</td></tr>
+      <tr><td>Scope</td><td>Broad — includes all promises</td><td>Narrow — only enforceable agreements</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- Essential Elements of Contract -->
+  <div class="section-h">📋 Essential Elements of a Valid Contract</div>
+  <div class="revision-grid">
+    <div class="rv-card"><div class="rv-icon">🤝</div><div class="rv-term">OFFER &amp; ACCEPTANCE</div><p>Valid proposal + unconditional acceptance</p></div>
+    <div class="rv-card"><div class="rv-icon">🎯</div><div class="rv-term">LEGAL INTENTION</div><p>Both parties intend to create legal relations</p></div>
+    <div class="rv-card"><div class="rv-icon">💰</div><div class="rv-term">LAWFUL CONSIDERATION</div><p>Something of value exchanged between parties</p></div>
+    <div class="rv-card"><div class="rv-icon">🧠</div><div class="rv-term">CAPACITY</div><p>Parties must be 18+, sane, not disqualified</p></div>
+    <div class="rv-card"><div class="rv-icon">✅</div><div class="rv-term">FREE CONSENT</div><p>No coercion, undue influence, fraud or misrepresentation</p></div>
+    <div class="rv-card"><div class="rv-icon">📜</div><div class="rv-term">LEGAL OBJECT</div><p>Purpose must not be illegal or immoral</p></div>
+    <div class="rv-card"><div class="rv-icon">⚡</div><div class="rv-term">POSSIBILITY</div><p>Performance must be physically possible</p></div>
+    <div class="rv-card"><div class="rv-icon">📑</div><div class="rv-term">FORMALITIES</div><p>Writing, registration as required by law</p></div>
+  </div>
+
+  <!-- Free Consent / Factors -->
+  <div class="section-h">❌ Factors Vitiating Free Consent</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Factor</th><th>Meaning</th><th>Effect on Contract</th></tr></thead>
+    <tbody>
+      <tr><td>Coercion</td><td>Consent obtained by force or threat</td><td>Voidable by aggrieved party</td></tr>
+      <tr><td>Undue Influence</td><td>Dominant party misuses position</td><td>Voidable</td></tr>
+      <tr><td>Fraud</td><td>Intentional deception / false facts / concealment</td><td>Voidable</td></tr>
+      <tr><td>Misrepresentation</td><td>Innocent or negligent false statement</td><td>Voidable</td></tr>
+      <tr><td>Mistake (Sec 20–22)</td><td>Both/one party's erroneous belief</td><td>Void (not merely voidable)</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- Transfer of Property Act -->
+  <div class="section-h">🏡 Transfer of Property Act 1882</div>
+  <div class="cards cards-3">
+    <div class="card blue"><span class="card-icon">🔄</span><h3>Transfer of Property</h3><p>Transfer by a <strong>living person</strong> to another — present or future. Includes individuals, companies, associations.</p></div>
+    <div class="card gold"><span class="card-icon">🏠</span><h3>Mortgage</h3><p>Transfer of <strong>interest in specific immovable property</strong> as security for loan repayment. Not ownership — interest only.</p></div>
+    <div class="card green"><span class="card-icon">🌳</span><h3>Immovable Property</h3><p>Land, buildings, trees attached to earth, fixed machinery, permanent structures, etc.</p></div>
+  </div>
+
+  <!-- Power of Attorney Act -->
+  <div class="section-h">⚖️ Power of Attorney Act 2012</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Type</th><th>Definition</th><th>Use Case</th></tr></thead>
+    <tbody>
+      <tr><td>Power of Attorney</td><td>Legal authority to act on someone's behalf</td><td>Banking, property, legal, business transactions</td></tr>
+      <tr><td>Irrevocable Power of Attorney</td><td>For sale/mortgage of immovable property; cannot be cancelled easily</td><td>Property sales when owner is abroad</td></tr>
+      <tr><td>General Power of Attorney</td><td>For general acts, excluding irrevocable property transfers</td><td>Managing accounts, signing documents</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- QUICK REVISION -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section class="module" id="mod-revision">
+  <div class="module-header">
+    <div class="module-icon" style="background:rgba(212,168,67,.15);">⚡</div>
+    <div class="module-title"><small>EXAM READY</small>Quick Revision — Must-Know Flash Cards</div>
+  </div>
+
+  <div class="section-h">🔑 Key Terms &amp; Acronyms</div>
+  <div class="revision-grid">
+    <div class="rv-card"><div class="rv-icon">🔐</div><div class="rv-term">CDD</div><p>Customer Due Diligence — verify identity, address, source of income</p></div>
+    <div class="rv-card"><div class="rv-icon">🔍</div><div class="rv-term">EDD</div><p>Enhanced Due Diligence — extra checks for high-risk/PEP clients</p></div>
+    <div class="rv-card"><div class="rv-icon">🆔</div><div class="rv-term">UCIC</div><p>Unique Customer ID — one code for all accounts of one person at a bank</p></div>
+    <div class="rv-card"><div class="rv-icon">📊</div><div class="rv-term">TP</div><p>Transaction Profile — expected monthly deposit/withdrawal pattern (AML)</p></div>
+    <div class="rv-card"><div class="rv-icon">📋</div><div class="rv-term">PIF</div><p>Personal Information Form — detailed customer data collected at account opening</p></div>
+    <div class="rv-card"><div class="rv-icon">💰</div><div class="rv-term">SLR</div><p>Statutory Liquidity Ratio — ≥ 13% of deposits in cash/gold/securities</p></div>
+    <div class="rv-card"><div class="rv-icon">🏦</div><div class="rv-term">CRR</div><p>Cash Reserve Ratio — ≥ 5.5% minimum cash kept with Bangladesh Bank</p></div>
+    <div class="rv-card"><div class="rv-icon">📄</div><div class="rv-term">SAR / STR</div><p>Suspicious Activity/Transaction Report — filed with BFIU</p></div>
+    <div class="rv-card"><div class="rv-icon">🌐</div><div class="rv-term">AD Bank</div><p>Authorised Dealer — licensed by BB to handle foreign exchange</p></div>
+    <div class="rv-card"><div class="rv-icon">⚡</div><div class="rv-term">RTGS</div><p>Real-Time Gross Settlement — instant high-value inter-bank transfers</p></div>
+    <div class="rv-card"><div class="rv-icon">🔄</div><div class="rv-term">BEFTN</div><p>Bangladesh Electronic Funds Transfer Network — batch electronic payments</p></div>
+    <div class="rv-card"><div class="rv-icon">🏧</div><div class="rv-term">NPSB</div><p>National Payment Switch Bangladesh — interoperable ATM/POS network</p></div>
+    <div class="rv-card"><div class="rv-icon">🧭</div><div class="rv-term">RFFO</div><p>Regulatory FinTech Facilitation Office — BB body promoting digital finance</p></div>
+    <div class="rv-card"><div class="rv-icon">📱</div><div class="rv-term">MFS</div><p>Mobile Financial Services — bKash, Nagad, Rocket</p></div>
+    <div class="rv-card"><div class="rv-icon">🏢</div><div class="rv-term">BFIU</div><p>Bangladesh Financial Intelligence Unit — AML/CFT intelligence agency</p></div>
+    <div class="rv-card"><div class="rv-icon">💻</div><div class="rv-term">DAO</div><p>Digital Account Opening — online account opening via app</p></div>
+    <div class="rv-card"><div class="rv-icon">📍</div><div class="rv-term">CPV</div><p>Contact Point Verification — field verification of customer data</p></div>
+    <div class="rv-card"><div class="rv-icon">🏦</div><div class="rv-term">BACH</div><p>Bangladesh Automated Clearing House — national cheque &amp; EFT clearing</p></div>
+  </div>
+
+  <!-- Laws at a Glance -->
+  <div class="section-h" style="margin-top:30px">📚 All Key Laws at a Glance</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Law / Regulation</th><th>Main Focus</th><th>Key Sections / Topics</th></tr></thead>
+    <tbody>
+      <tr><td>Bangladesh Bank Order 1972</td><td>BB structure &amp; functions</td><td>Article 9, Monetary Policy, Note Issue</td></tr>
+      <tr><td>Banking Company Act 1991</td><td>Bank regulation &amp; control</td><td>Sec 29 (Advances), 33(2) SLR/CRR, 35 (Unclaimed)</td></tr>
+      <tr><td>Artho Rin Adalat Ain 2003</td><td>Loan recovery courts</td><td>Sec 12, 33, 40–47</td></tr>
+      <tr><td>Negotiable Instruments Act 1881</td><td>Cheques, bills, notes</td><td>Holder, HDC, Endorsement, Garnishee</td></tr>
+      <tr><td>Foreign Exchange Reg. Act 1947</td><td>FX control &amp; AD banks</td><td>Currency dealing, remittance, gold</td></tr>
+      <tr><td>Note Refund Regulations 2012</td><td>Damaged note refund</td><td>Altered, Mutilated, Obliterated — 50%/90% rules</td></tr>
+      <tr><td>Deposit Insurance Act 2000</td><td>Depositor protection</td><td>BDT 1 lakh coverage, DITF, premiums</td></tr>
+      <tr><td>Finance Company Act 2023</td><td>Foreign investment in NBFIs</td><td>Tax benefits, foreign ownership, governance</td></tr>
+      <tr><td>Companies Act 1994</td><td>Company formation &amp; governance</td><td>MoA, AoA, OPC, Public vs Private, Shares, Penalties</td></tr>
+      <tr><td>Contract Act 1872</td><td>Enforceable agreements</td><td>Offer, Consent, Fraud, Guarantee, Indemnity</td></tr>
+      <tr><td>Transfer of Property Act 1882</td><td>Mortgage &amp; property</td><td>Immovable property, mortgage, transfer</td></tr>
+      <tr><td>Power of Attorney Act 2012</td><td>Delegation of authority</td><td>General, Irrevocable, Specific POA</td></tr>
+      <tr><td>Money Laundering Prevention Act 2012</td><td>AML compliance</td><td>KYC, EDD, STR/SAR, BFIU, 28 predicate offences</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- Broad Questions for Exam -->
+  <div class="section-h" style="margin-top:30px">📝 Likely Broad Exam Questions</div>
+  <div class="key-points">
+    <div class="kp"><div class="kp-icon">📋</div><div class="kp-text"><h4>Formalities for Partnership &amp; Limited Company account opening</h4><p>Cover: documents required, signatories, KYC, beneficial owner identification, Board Resolution</p></div></div>
+    <div class="kp"><div class="kp-icon">🔐</div><div class="kp-text"><h4>KYC, e-KYC, CDD, EDD — their components and differences</h4><p>Cover: 4 KYC components, when EDD applies, role of PEPs and beneficial owners</p></div></div>
+    <div class="kp"><div class="kp-icon">🏛️</div><div class="kp-text"><h4>Rights of a Banker — Lien and Set-off in detail</h4><p>Cover: general vs particular lien, right of set-off with examples</p></div></div>
+    <div class="kp"><div class="kp-icon">🌀</div><div class="kp-text"><h4>Paying Banker — duties and when a cheque can be refused</h4><p>Cover: all conditions for dishonour, positive pay, garnishee order</p></div></div>
+    <div class="kp"><div class="kp-icon">🧾</div><div class="kp-text"><h4>Dormant accounts — reactivation procedure</h4><p>Cover: timelines for dormancy, consequences, 5-year KYC, 10-year unclaimed rule</p></div></div>
+    <div class="kp"><div class="kp-icon">💸</div><div class="kp-text"><h4>Artho Rin Adalat Ain 2003 — sections and their effectiveness</h4><p>Cover: all key sections, process of loan recovery, appeal/revision rights, challenges</p></div></div>
+    <div class="kp"><div class="kp-icon">🏢</div><div class="kp-text"><h4>BFIU — functions and role in AML/CFT</h4><p>Cover: STR/SAR, predicate offences, reporting organizations, international cooperation</p></div></div>
+    <div class="kp"><div class="kp-icon">📊</div><div class="kp-text"><h4>Discuss BACH, BEFTN, RTGS, NPSB — digital payment ecosystem</h4><p>Cover: purpose, participants, difference between batch vs real-time settlement</p></div></div>
+  </div>
+</section>
+
+</div><!-- /.container -->
+<footer>Monetary and Financial System (MAFS)</footer>
+
+<script>
+function goTo(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
+
+function handleSearch(){
+  const q=document.getElementById('searchInput').value.trim().toLowerCase();
+  const countEl=document.getElementById('resultCount');
+  document.querySelectorAll('mark').forEach(m=>{const p=m.parentNode;p.replaceChild(document.createTextNode(m.textContent),m);p.normalize()});
+  if(!q){countEl.textContent='';return}
+  let count=0;
+  const walker=document.createTreeWalker(document.getElementById('mainContent'),NodeFilter.SHOW_TEXT,{acceptNode:n=>n.nodeValue.trim()?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT});
+  const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+  nodes.forEach(node=>{
+    const idx=node.nodeValue.toLowerCase().indexOf(q);if(idx===-1)return;
+    const mark=document.createElement('mark');const range=document.createRange();
+    range.setStart(node,idx);range.setEnd(node,idx+q.length);range.surroundContents(mark);count++;
+  });
+  countEl.textContent=count?`${count} found`:'No results';
+  if(count){const first=document.querySelector('mark');if(first)first.scrollIntoView({behavior:'smooth',block:'center'})}
+}
+
+window.addEventListener('scroll',()=>{
+  const sections=document.querySelectorAll('.module');const btns=document.querySelectorAll('.toc-btn');let cur='';
+  sections.forEach(s=>{if(window.scrollY>=s.offsetTop-120)cur=s.id});
+  btns.forEach(b=>b.classList.toggle('active',b.getAttribute('onclick')?.includes(cur)));
+});
+</script>
+</body>
+</html>
