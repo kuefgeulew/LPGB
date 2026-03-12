@@ -1,2 +1,2 @@
-# MAFS
-Monetary and Financial System Exam Prep
+# LPGB
+Laws and Practice of General banking JAIBB Exam Prep
