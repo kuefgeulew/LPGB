@@ -68,7 +68,8 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 .quiz-section.open{display:block;animation:fadeUp .35s ease both}
 .quiz-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
 .quiz-title{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--cream)}
-.quiz-progress-dots{display:flex;gap:6px}
+.quiz-progress-dots{display:flex;gap:4px;flex-wrap:wrap;max-width:340px}
+.quiz-progress-dots .q-dot{width:8px;height:8px}
 .q-dot{width:10px;height:10px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);transition:all .2s}
 .q-dot.active{background:var(--gold);border-color:var(--gold2);transform:scale(1.2)}
 .q-dot.correct{background:var(--b);border-color:var(--b)}
@@ -107,7 +108,7 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 .res-btn:hover{border-color:rgba(212,168,67,.3);color:var(--gold)}
 .res-btn.primary{background:linear-gradient(135deg,rgba(126,232,162,.2),rgba(126,232,162,.08));border-color:rgba(126,232,162,.4);color:var(--b)}
 
-/* MODULE STYLES (original) */
+/* MODULE STYLES */
 .module{margin-top:10px}
 .module-header{display:flex;align-items:center;gap:14px;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid var(--border)}
 .module-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
@@ -117,10 +118,12 @@ body{background:var(--bg);color:var(--text);font-family:'Crimson Pro',Georgia,se
 .section-h{font-family:'Playfair Display',serif;font-size:1.25rem;color:var(--cream);margin:26px 0 12px;display:flex;align-items:center;gap:10px}
 .section-h::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
 
-.cards{display:grid;gap:16px}
-.cards-2{grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
-.cards-3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-.cards-4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+/* ─── CARDS — fixed explicit columns, evenly distributed ─── */
+.cards{display:grid;gap:16px;width:100%}
+.cards-2{grid-template-columns:repeat(2,1fr)}
+.cards-3{grid-template-columns:repeat(3,1fr)}
+.cards-4{grid-template-columns:repeat(4,1fr)}
+
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px 22px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
 .card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.4)}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
@@ -196,7 +199,9 @@ tbody td:first-child{color:var(--cream);font-weight:600}
 .kp-text ul{padding-left:16px;font-size:14px;color:var(--text)}
 .kp-text ul li{margin-bottom:2px}
 
-.revision-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:11px;margin:14px 0}
+/* ─── REVISION GRID — 6 columns desktop, responsive ─── */
+.revision-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:11px;margin:14px 0}
+
 .rv-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:13px 15px;text-align:center;transition:transform .2s}
 .rv-card:hover{transform:scale(1.02)}
 .rv-icon{font-size:24px;margin-bottom:7px}
@@ -227,7 +232,17 @@ tbody td:first-child{color:var(--cream);font-weight:600}
 
 footer{text-align:center;padding:28px 20px;border-top:1px solid var(--border);color:var(--muted);font-size:13px;font-family:'JetBrains Mono',monospace;letter-spacing:.5px}
 
+/* ─── RESPONSIVE BREAKPOINTS ─── */
+@media(max-width:960px){
+  .cards-3{grid-template-columns:repeat(2,1fr)}
+  .cards-4{grid-template-columns:repeat(2,1fr)}
+  .revision-grid{grid-template-columns:repeat(4,1fr)}
+}
 @media(max-width:600px){
+  .cards-2{grid-template-columns:1fr}
+  .cards-3{grid-template-columns:1fr}
+  .cards-4{grid-template-columns:repeat(2,1fr)}
+  .revision-grid{grid-template-columns:repeat(2,1fr)}
   .vs-box{grid-template-columns:1fr}
   .flow-step+.flow-step::before{display:none}
   .flow{flex-direction:column}
@@ -450,7 +465,6 @@ footer{text-align:center;padding:28px 20px;border-top:1px solid var(--border);co
     </div>
   </div>
 
-  <!-- QUIZ TRIGGER -->
   <div id="quiz-trigger-0" style="display:flex;justify-content:center;margin-top:30px">
     <button class="quiz-trigger-btn" onclick="openQuiz(0)">🎯 Take Module Quiz — 5 Questions</button>
   </div>
@@ -689,7 +703,7 @@ footer{text-align:center;padding:28px 20px;border-top:1px solid var(--border);co
     </div>
 
     <div class="section-h">🌾 33. Special Bank Accounts</div>
-    <div class="cards cards-2">
+    <div class="cards cards-3">
       <div class="card green"><span class="card-icon">🌾</span><h3>Farmer's Account</h3><ul>
         <li>Open with only <strong>BDT 10</strong></li>
         <li>Requires NID + Agricultural Equipment Assistance Card</li></ul></div>
@@ -1638,7 +1652,7 @@ footer{text-align:center;padding:28px 20px;border-top:1px solid var(--border);co
   </div>
 
   <div id="quiz-trigger-12" style="display:flex;justify-content:center;margin-top:30px">
-    <button class="quiz-trigger-btn" onclick="openQuiz(12)">🎯 Final Mixed Quiz — 5 Questions</button>
+    <button class="quiz-trigger-btn" onclick="openQuiz(12)">🏆 Final Exam — 20 Questions (All Modules)</button>
   </div>
   <div class="quiz-section" id="quiz-12"></div>
   <div class="bottom-nav">
@@ -1661,11 +1675,7 @@ footer{text-align:center;padding:28px 20px;border-top:1px solid var(--border);co
 <footer>LPGB — Laws and Practice of General Banking · Gamified Study Edition</footer>
 
 <script>
-// ═══════════════════════════════════════════════════════
-// QUIZ DATA
-// ═══════════════════════════════════════════════════════
 const quizData = [
-  // Tab 0 — Core Banking Concepts
   [
     {q:"What is Bancassurance?",opts:["Bank merger with another bank","Partnership between a bank and an insurance company","Bank providing government loans","Banks investing in stocks"],ans:1,exp:"Bancassurance is when a bank acts as a distribution channel for insurance products, earning commission on each sale."},
     {q:"In a Repo transaction, what does the commercial bank do?",opts:["Buys securities from the public","Sells securities to BB and promises to repurchase later","Issues treasury bonds to investors","Lends money to other banks"],ans:1,exp:"In a Repo, the bank SELLS securities to Bangladesh Bank to get short-term liquidity, then repurchases them later."},
@@ -1673,7 +1683,6 @@ const quizData = [
     {q:"What is Drawing Power (DP)?",opts:["The right to draw salaries from an account","The maximum amount a borrower can withdraw based on pledged goods","Authority to sign cheques on behalf of a company","The power to issue demand drafts"],ans:1,exp:"Drawing Power is the maximum loan amount a borrower can draw, calculated as a percentage (60-80%) of the value of goods pledged."},
     {q:"ADR in banking stands for?",opts:["Automated Draft Remittance","Authorised Dealer Remittance","Alternative Dispute Resolution","Annual Dividend Return"],ans:2,exp:"Alternative Dispute Resolution (ADR) includes negotiation, mediation, arbitration and conciliation — all ways to resolve disputes without going to court."}
   ],
-  // Tab 1 — Banking Types
   [
     {q:"In Unit Banking, each bank has...",opts:["Many branches across the country","Only one single office — no branches","Two offices — one head, one sub","Regional offices only"],ans:1,exp:"Unit Banking means one bank, one office — no branches. Common in small U.S. towns historically."},
     {q:"Which type of banking helps large firms raise capital and manage IPOs?",opts:["Retail Banking","Deposit Banking","Investment Banking","Virtual Banking"],ans:2,exp:"Investment Banking specialises in helping large corporations raise capital, manage IPOs, mergers, and acquisitions. Example: Goldman Sachs."},
@@ -1681,7 +1690,6 @@ const quizData = [
     {q:"NBFIs can only accept which type of deposits?",opts:["Current accounts","Savings accounts","Fixed/Term deposits only","All types of deposits"],ans:2,exp:"Unlike commercial banks, NBFIs (like IDLC, IPDC) can ONLY accept fixed/term deposits — not savings or current accounts."},
     {q:"Scheduled Banks in Bangladesh are...",opts:["Banks without any branches","Banks listed in Bangladesh Bank's official schedule under Bank Company Act 1991","Banks that operate only on weekdays","Banks owned by the government"],ans:1,exp:"Scheduled Banks are licensed under the Bank Company Act 1991 and listed in Bangladesh Bank's official schedule, subject to full BB supervision."}
   ],
-  // Tab 2 — Banker–Customer
   [
     {q:"When you deposit money in a bank, what is your role?",opts:["Debtor","Trustee","Creditor","Mortgagee"],ans:2,exp:"When you deposit money, the bank owes you money — so YOU are the creditor and the BANK is the debtor."},
     {q:"The 'Right of Lien' allows a bank to...",opts:["Charge extra interest without notice","Hold a customer's property or securities until debt is paid","Disclose customer details to any party","Close a customer's account unilaterally"],ans:1,exp:"Right of Lien allows the bank to retain property/securities until dues are cleared. General Lien = any property for any dues; Particular Lien = specific items for specific loan."},
@@ -1689,7 +1697,6 @@ const quizData = [
     {q:"'Either or Survivor' joint account means...",opts:["Both parties must sign for every transaction","Either party can operate the account alone; survivor gets full balance on death","The court decides who gets the money after death","The nominee automatically inherits the balance"],ans:1,exp:"'Either or Survivor' allows either account holder to operate independently. After one person's death, the survivor can withdraw by presenting the death certificate — no legal succession needed."},
     {q:"In a Guarantee, who is the 'Surety'?",opts:["The person who gives the loan","The person who takes the loan","The third party who promises to pay if the debtor defaults","The court appointed mediator"],ans:2,exp:"In a guarantee, there are 3 parties: Creditor (bank), Debtor (borrower), and Surety (guarantor). The Surety pays only if the debtor defaults — making surety liability SECONDARY/conditional."}
   ],
-  // Tab 3 — Accounts
   [
     {q:"A Farmer's account can be opened with a minimum deposit of...",opts:["BDT 500","BDT 100","BDT 50","BDT 10"],ans:3,exp:"Farmer's accounts require only BDT 10 as minimum deposit, along with NID/Birth Certificate + Agricultural Equipment Assistance Card."},
     {q:"For a Limited Company account, who is classified as a 'Beneficial Owner'?",opts:["Any employee of the company","Any director regardless of shareholding","A person owning 20% or more shares","The company's external auditor"],ans:2,exp:"A Beneficial Owner is anyone owning 20%+ shares OR who controls the company in practice. Banks must identify these individuals for AML compliance."},
@@ -1697,7 +1704,6 @@ const quizData = [
     {q:"Digital Account Opening (DAO) uses what for identity verification?",opts:["Branch visit with all original documents","NID database + face scan/selfie via mobile app","Guarantor signature at the bank","Paper forms submitted by post"],ans:1,exp:"DAO like BRAC Bank's Astha Smart Account uses NID scan + live selfie/face scan. No branch visit or paper submission needed."},
     {q:"A Garments Workers' Account requires a minimum deposit of...",opts:["BDT 10","BDT 50","BDT 100","BDT 500"],ans:2,exp:"Garments Workers' Accounts can be opened with BDT 100. Employee ID + NID required. Banks must submit quarterly reports to Bangladesh Bank."}
   ],
-  // Tab 4 — KYC/AML
   [
     {q:"The three stages of Money Laundering are...",opts:["Deposit, Transfer, Withdrawal","Placement, Layering, Integration","Hiding, Moving, Spending","Receiving, Sending, Investing"],ans:1,exp:"Stage 1: Placement (introducing dirty money into banking system), Stage 2: Layering (complex transactions to hide source), Stage 3: Integration (re-entering as legitimate money/assets)."},
     {q:"Enhanced Due Diligence (EDD) is applied to...",opts:["All customers at account opening","Only first-time account holders","High-risk customers and Politically Exposed Persons (PEPs)","Only foreign nationals opening accounts"],ans:2,exp:"EDD is the intensified version of CDD applied to HIGH-RISK customers and PEPs. Requires detailed source of funds verification, intensive monitoring, and senior management approval."},
@@ -1705,7 +1711,6 @@ const quizData = [
     {q:"A 'Beneficial Owner' is someone who...",opts:["Holds a nominee director position on paper","Actually benefits from a company/account even if not formally listed as owner","Works as the CEO of the company","Is registered as the primary account holder"],ans:1,exp:"The Beneficial Owner is the REAL person behind a corporate structure who benefits economically — even if another person's name appears on official documents. Banks must identify them (20%+ shares)."},
     {q:"PEP stands for...",opts:["Personal Evaluation Protocol","Primary Exchange Partner","Politically Exposed Person","Protected Entity Profile"],ans:2,exp:"A PEP (Politically Exposed Person) is someone with high political/official status — ministers, MPs, judges, military officers, state-enterprise heads. They pose higher corruption/ML risk, requiring EDD."}
   ],
-  // Tab 5 — Negotiable Instruments
   [
     {q:"A Stale Cheque is one older than...",opts:["3 months from issue date","6 months from issue date","1 year from issue date","2 years from issue date"],ans:1,exp:"A cheque becomes stale — and must be dishonoured — if it is more than 6 months old from its issue date."},
     {q:"A Holder in Due Course (HDC) receives...",opts:["No legal protection","Basic protection only","Full legal protection — even if instrument has hidden defects","Protection only if bank agrees to honour"],ans:2,exp:"HDC gets the STRONGEST legal protection. They obtained the instrument in GOOD FAITH, for VALUE, and WITHOUT notice of any defect. Even if later found fraudulent, HDC can still claim."},
@@ -1713,14 +1718,12 @@ const quizData = [
     {q:"Endorsement means...",opts:["Stamping a PAID mark on the front of a cheque","Signing the BACK of a cheque or bill to transfer ownership to another person","Adding a crossing to make it non-transferable","Dating the cheque on the reverse side"],ans:1,exp:"Endorsement = signing the BACK of a negotiable instrument to transfer title/ownership. The endorser signs; the endorsee receives rights. Creates a chain of transfer."},
     {q:"A Garnishee Order is issued by...",opts:["Bangladesh Bank under FERA","A court — allowing creditor to seize debtor's money from a third party (bank)","The account holder themselves","The paying bank on its own authority"],ans:1,exp:"A Garnishee Order is a COURT ORDER that directs a third party (like the debtor's bank) to pay the creditor directly from the debtor's funds, without needing the debtor's consent."}
   ],
-  // Tab 6 — Foreign Exchange
   [
     {q:"FERA stands for...",opts:["Foreign Exchange Reserve Act","Foreign Exchange Regulation Act 1947","Foreign Exchange Reform Act","Foreign Exchange Remittance Act"],ans:1,exp:"FERA = Foreign Exchange Regulation Act 1947. It controls all foreign currency dealings in Bangladesh — trade payments, remittances, import/export of currency/gold, and foreign investment."},
     {q:"A Bill of Lading (B/L) serves as...",opts:["A tax invoice for imported goods","A receipt, contract of carriage, AND title document for shipped goods","An insurance certificate for the cargo","A customs duty payment record"],ans:1,exp:"B/L serves THREE roles: (1) Receipt that goods were received by carrier, (2) Contract of carriage terms, (3) Title document — whoever holds it has ownership of goods."},
     {q:"Authorised Dealer (AD) Banks are licensed by...",opts:["Ministry of Finance","Ministry of Commerce","Bangladesh Bank","Securities and Exchange Commission"],ans:2,exp:"AD Banks are licensed by Bangladesh Bank to deal in foreign exchange — buy/sell currencies, manage LCs, issue student/medical files, handle remittances."},
     {q:"In a Letter of Credit (LC), who provides the payment guarantee?",opts:["The importer directly","The exporter's own bank","The issuing bank (importer's bank)","Bangladesh Bank"],ans:2,exp:"In an LC, the ISSUING BANK (importer's bank) gives a written guarantee to the exporter that payment will be made once the agreed documents are presented correctly."}
   ],
-  // Tab 7 — Digital Banking
   [
     {q:"RTGS is used for...",opts:["Batch processing of small payments","High-value fund transfers that settle INSTANTLY in real time","Daily cheque clearing between banks","ATM cash replenishment"],ans:1,exp:"RTGS (Real-Time Gross Settlement) is designed for HIGH-VALUE transfers that need IMMEDIATE settlement. Bangladesh Bank debits the sender and credits the receiver in real time."},
     {q:"A Savings account becomes dormant after no transactions for...",opts:["6 months","12 months","18 months","24 months"],ans:2,exp:"Savings accounts go dormant after 18 months of inactivity. Current/SND accounts go dormant after only 6 months. After 5 years dormant: full new KYC needed. After 10 years: transfer to BB."},
@@ -1728,7 +1731,6 @@ const quizData = [
     {q:"Excise duty on a bank account with highest balance of Tk. 3,00,000 in a year is...",opts:["Nil","Tk. 150","Tk. 500","Tk. 3,000"],ans:1,exp:"Per SRO 143/2020: Balances between Tk. 1,00,001 – 5,00,000 attract Tk. 150 annual excise duty. Tk. 3,00,000 falls in this bracket → Tk. 150."},
     {q:"Standing Instructions allow a customer to...",opts:["Stop all transactions immediately","Instruct the bank to make automatic periodic transactions without contacting the bank each time","Request a change in account interest rate","Apply for a new loan automatically every year"],ans:1,exp:"Standing Instructions are pre-authorised, automatic periodic payment orders — like insurance premiums, utility bills, or DPS transfers. The bank executes them without needing the customer to initiate each time."}
   ],
-  // Tab 8 — Cash Management
   [
     {q:"If a cash shortage is found at day-end, the teller must...",opts:["Report to Bangladesh Bank immediately","Wait 3 days before taking any action","Pay the difference IMMEDIATELY from personal funds","Adjust from next day's cash"],ans:2,exp:"The teller must pay the shortage amount IMMEDIATELY from personal funds. If not possible, they must adjust from their cash security deposit within 3 days and report in writing."},
     {q:"A banknote with more than 90% of its original area remaining gets...",opts:["No refund","Half value refund","Full face value refund","Proportionate value based on area"],ans:2,exp:"Per Note Refund Regulations: >90% area = FULL VALUE, 50-90% area = proportionate value, <50% area = NO refund."},
@@ -1736,14 +1738,12 @@ const quizData = [
     {q:"Vault cash handling requires...",opts:["Any single authorised employee","Only the branch manager working alone","Dual control — Manager AND Cash Officer together","Three officers with two witnesses"],ans:2,exp:"DUAL CONTROL is mandatory for vault cash. The Manager AND Cash Officer must always be present together. They each hold separate keys — no one person can operate both keys alone."},
     {q:"Cash excess unclaimed after 3 months is transferred to...",opts:["Bangladesh Bank's reserve fund","The government treasury directly","Sundry Income of the branch","Back to the customer's account"],ans:2,exp:"Cash excess that remains unclaimed/unexplained after 3 months is credited to 'Sundry Income' in the branch's accounts."}
   ],
-  // Tab 9 — Bank Operations
   [
     {q:"DCFCL stands for...",opts:["Daily Cash Flow Control List","Departmental Control Function Checklist","Digital Control and Finance Compliance Log","Document Control Filing and Checklist"],ans:1,exp:"DCFCL = Departmental Control Function Checklist. It's a structured internal control checklist verified by branch managers to ensure all banking procedures are properly followed."},
     {q:"A Business Continuity Plan (BCP) primarily ensures...",opts:["Maximum profit for shareholders","That banking operations can resume after a disaster or cyber-attack","Customer satisfaction scoring","New branch expansion planning"],ans:1,exp:"BCP ensures business resilience — the bank can continue operating or quickly recover after disasters, system failures, or cyber-attacks. Includes data backup, remote work, off-site storage."},
     {q:"The fundamental accounting rule in General Ledger balancing is...",opts:["Assets = Liabilities only","Total Debits must always equal Total Credits","Income must exceed Expenses","Cash must equal Total Deposits"],ans:1,exp:"The foundational accounting rule: DEBITS = CREDITS. Every transaction has equal debit and credit entries. Reconciliation means checking the GL against bank statements to ensure accuracy."},
     {q:"Vouchers in banking must be signed by...",opts:["The customer who initiated the transaction","Any available bank officer","The accountant AND supervisor — both required","Only the Branch Manager"],ans:2,exp:"Vouchers are source documents for each transaction. They MUST be signed by both the accountant (who processes) and supervisor (who approves) — this dual authorization prevents fraud."}
   ],
-  // Tab 10 — Banking Laws
   [
     {q:"The SLR (Statutory Liquidity Ratio) minimum requirement is...",opts:["5.5% of demand & time liabilities","8% of demand & time liabilities","13% of demand & time liabilities","20% of demand & time liabilities"],ans:2,exp:"Per Banking Company Act 1991 Section 33(2): SLR minimum = ≥13% of demand & time liabilities. Banks must hold this as cash, gold, or approved securities. CRR is the separate 5.5% cash kept with BB."},
     {q:"Under Artho Rin Adalat Ain 2003, the minimum notice period before filing suit is...",opts:["7 days","15 days","30 days","60 days"],ans:1,exp:"Section 12 requires the bank to serve a written notice to the borrower demanding repayment with a MINIMUM of 15 days before filing a case in the Artho Rin Adalat."},
@@ -1751,7 +1751,6 @@ const quizData = [
     {q:"Unclaimed deposits must be transferred to Bangladesh Bank after...",opts:["3 years of inactivity","5 years of inactivity","7 years of inactivity","10 years of inactivity"],ans:3,exp:"Per Banking Company Act Section 35: deposits and valuables unclaimed for 10 years must be transferred to Bangladesh Bank. The bank must first give 3 months' notice before the transfer."},
     {q:"'Tier 2 Capital' is also called...",opts:["Going Concern Capital","Core Capital","Gone Concern Capital","Common Equity Tier 1"],ans:2,exp:"Tier 2 = 'Gone Concern Capital' — it absorbs losses during liquidation (when the bank is being wound up). Includes subordinated debts and general provisions. Tier 1 = 'Going Concern Capital' (absorbs losses while bank still operates)."}
   ],
-  // Tab 11 — Company Law
   [
     {q:"Minimum members required to form a Public Limited Company is...",opts:["2","5","7","10"],ans:2,exp:"A Public Limited Company requires a MINIMUM of 7 members (shareholders) with no maximum. A Private Limited Company requires minimum 2 members with a maximum of 50."},
     {q:"OPC (One Person Company) was introduced in Bangladesh in...",opts:["2015","2018","2020","2023"],ans:2,exp:"OPC was introduced in Bangladesh through the 2020 amendment to the Companies Act 1994, effective May 2021. It allows a single individual to form a company with limited liability."},
@@ -1759,331 +1758,143 @@ const quizData = [
     {q:"The Memorandum of Association (MoA) primarily defines...",opts:["Internal management rules and director meeting procedures","The company's identity, objectives, and external relations","Employee salary structures and promotion rules","The share price and dividend policy"],ans:1,exp:"MoA defines the company's EXTERNAL identity: name, registered address, objectives/scope, limited liability clause, and share capital. AoA governs INTERNAL management: directors, meetings, audits."},
     {q:"A contract obtained by fraud is...",opts:["Void from the beginning","Perfectly valid and cannot be challenged","Voidable — the aggrieved party can choose to void it","Illegal and punishable by imprisonment"],ans:2,exp:"Fraud makes a contract VOIDABLE (not void). Only the AGGRIEVED party can choose to void it. If they choose to continue with the contract, it remains valid. Mistake (Section 20-22) makes a contract VOID."}
   ],
-  // Tab 12 — Quick Revision
   [
-    {q:"UCIC stands for...",opts:["Universal Credit Insurance Certificate","Unified Central Information Centre","Unique Customer Identification Code","Unit Credit Interest Calculation"],ans:2,exp:"UCIC = Unique Customer Identification Code. Each customer gets one code that links ALL their accounts at a single bank — ensuring consistent KYC across all accounts."},
-    {q:"BEFTN handles...",opts:["High-value real-time transfers above Tk.1 crore","Batch electronic fund transfers (salaries, vendor payments, etc.)","ATM cash replenishment management","Physical cheque printing and distribution"],ans:1,exp:"BEFTN = Bangladesh Electronic Funds Transfer Network. It handles BATCH processing of electronic transfers — salary disbursements, corporate vendor payments, government transfers. NOT real-time like RTGS."},
-    {q:"The Money Laundering Prevention Act was enacted in...",opts:["2008","2010","2012","2015"],ans:2,exp:"The Money Laundering Prevention Act (MLPA) was enacted in 2012. It mandates KYC, CDD, STR/SAR filing, and all AML/CFT compliance requirements for banks and reporting organizations."},
-    {q:"Which payment system integrates ATMs and POS across 50+ banks?",opts:["RTGS","BEFTN","NPSB","BACH"],ans:2,exp:"NPSB = National Payment Switch Bangladesh. It integrates ATMs, POS, and internet banking of 50+ member banks, making one card usable at any member institution's terminal."},
-    {q:"RFFO stands for...",opts:["Reserve Fund and Finance Office","Regional Finance and Forex Office","Retail Finance and Funding Organization","Regulatory FinTech Facilitation Office"],ans:3,exp:"RFFO = Regulatory FinTech Facilitation Office. It's Bangladesh Bank's dedicated body for promoting safe FinTech innovation — enabling digital transformation while managing regulatory risks."}
+    {q:"[MODULE A] Bancassurance is best described as...",opts:["A government scheme for agricultural loans","A partnership where a bank distributes insurance products to its customers","A type of interbank lending facility","A fixed deposit product with insurance cover"],ans:1,exp:"Bancassurance = bank acting as a sales channel for an insurance company. The bank earns commission; the insurer gains customers without building its own distribution network."},
+    {q:"[MODULE A] In a Repo transaction, the commercial bank...",opts:["Buys government securities from the public","Sells securities to Bangladesh Bank and agrees to repurchase them later","Issues treasury bonds to investors","Lends surplus funds to other banks overnight"],ans:1,exp:"Repo: bank SELLS securities to BB to receive short-term liquidity, then repurchases at a slightly higher price. Reverse Repo is the opposite — BB buys to absorb excess liquidity from the system."},
+    {q:"[MODULE A] The Crawling Peg exchange rate system involves...",opts:["A fully free-floating currency with no intervention","Sudden large devaluations when reserves fall","Gradual, step-by-step adjustments to the exchange rate over time","Pegging the Taka permanently to the USD"],ans:2,exp:"Crawling Peg = small, predictable, incremental rate adjustments instead of sudden shocks. Gives exporters time to plan contracts and pricing. Bangladesh Bank uses this to manage BDT against USD."},
+    {q:"[MODULE A] NBFIs in Bangladesh, unlike commercial banks, can only accept...",opts:["Savings and current deposits","All types of deposits including demand deposits","Fixed and term deposits only","Deposits from foreign investors exclusively"],ans:2,exp:"NBFIs (IDLC, IPDC, LankaBangla) can ONLY take fixed/term deposits — not savings or current accounts. They also have no central deposit insurance unlike commercial banks."},
+    {q:"[MODULE B] When you deposit money in a bank, which relationship is created?",opts:["You are the debtor; bank is the creditor","You are the creditor; bank is the debtor","You are the trustee; bank is the beneficiary","You are the bailor; bank is the bailee"],ans:1,exp:"Deposit → YOU become the CREDITOR (bank owes you your money back). When you take a loan → you become the DEBTOR (you owe the bank). The relationship reverses depending on who owes whom."},
+    {q:"[MODULE B] The banker's Right of Set-Off allows the bank to...",opts:["Refuse any cheque without giving a reason","Adjust a customer's credit balance in one account against their debt in another","Seize a customer's property without court order","Disclose a customer's account details to third parties"],ans:1,exp:"Right of Set-Off: if you owe Tk.1 lakh on a loan but have Tk.40,000 in savings, the bank can automatically adjust/deduct that Tk.40,000 against your loan balance."},
+    {q:"[MODULE B] A bank CANNOT disclose customer information to...",opts:["Bangladesh Bank during a regulatory inspection","A court that has issued a formal order","A journalist writing a story about the customer","Law enforcement investigating money laundering"],ans:2,exp:"Banks must keep customer information secret. Permitted disclosures: court/statute order, customer consent, bank's own legal interest, legal duty (crime), or BB inspection. Media/journalists have NO right to customer data."},
+    {q:"[MODULE C] A Farmer's account in Bangladesh can be opened with a minimum deposit of...",opts:["BDT 500","BDT 100","BDT 50","BDT 10"],ans:3,exp:"Farmer's accounts require only BDT 10 to open — along with NID/Birth Certificate and an Agricultural Equipment Assistance Card. This promotes financial inclusion for rural farming communities."},
+    {q:"[MODULE C] The Transaction Profile (TP) maintained by banks is primarily used for...",opts:["Calculating the interest rate on a savings account","Detecting unusual or suspicious transactions under AML compliance","Determining the maximum loan limit for a customer","Setting the excise duty threshold for the account"],ans:1,exp:"TP records a customer's normal expected monthly transaction patterns (deposits, withdrawals, max limits). Any deviation from these patterns flags suspicious activity and triggers AML review."},
+    {q:"[MODULE D] The three stages of Money Laundering in correct order are...",opts:["Hiding, Moving, Spending","Deposit, Transfer, Withdrawal","Placement, Layering, Integration","Receiving, Structuring, Withdrawal"],ans:2,exp:"Stage 1 PLACEMENT: introducing illegal cash into banking. Stage 2 LAYERING: complex transactions to obscure the source. Stage 3 INTEGRATION: reintroducing funds as legitimate income or assets."},
+    {q:"[MODULE D] Enhanced Due Diligence (EDD) is triggered for...",opts:["Every new account opened at a bank","Only accounts with balances above Tk.1 crore","High-risk customers and Politically Exposed Persons (PEPs)","All foreign currency account holders regardless of risk"],ans:2,exp:"EDD applies to HIGH-RISK customers and PEPs. It requires detailed source-of-funds verification, intensive transaction monitoring, and senior management approval — beyond the standard CDD applied to all customers."},
+    {q:"[MODULE D] BFIU (Bangladesh Financial Intelligence Unit) is responsible for...",opts:["Issuing licences to new commercial banks","Receiving and analysing Suspicious Transaction Reports (STRs) to combat AML/CFT","Setting interest rate policy for all scheduled banks","Managing the country's foreign exchange reserves"],ans:1,exp:"BFIU receives STRs/SARs from all reporting organisations, produces financial intelligence, shares it with law enforcement, and coordinates internationally with foreign FIUs. It combats ML, TF, and proliferation financing."},
+    {q:"[MODULE E] A cheque becomes a 'Stale Cheque' and must be dishonoured when it is...",opts:["More than 3 months old from issue date","More than 6 months old from issue date","More than 1 year old from issue date","More than 90 days old from issue date"],ans:1,exp:"A cheque is stale — and legally must be dishonoured — after 6 months from its issue date. The paying banker has both the right and duty to refuse payment on a stale cheque."},
+    {q:"[MODULE E] A Holder in Due Course (HDC) is someone who acquires a negotiable instrument...",opts:["As a gift with full knowledge of any defects","In good faith, for value, and without notice of any defects","By court order in a legal dispute","By forging the previous holder's endorsement"],ans:1,exp:"HDC = acquired instrument in GOOD FAITH + for VALUE + WITHOUT NOTICE of any defect. HDC receives the strongest legal protection — they can enforce the instrument even if earlier parties had disputes."},
+    {q:"[MODULE F] In a Letter of Credit (LC) transaction, the payment guarantee is provided by...",opts:["The exporter's shipping company","The importer directly to the exporter","The issuing bank (importer's bank) to the exporter","Bangladesh Bank as the central guarantor"],ans:2,exp:"In an LC, the ISSUING BANK (importer's bank) gives a written guarantee to the seller/exporter: 'We guarantee payment once you present the agreed documents correctly.' This protects both sides in international trade."},
+    {q:"[MODULE G] RTGS (Real-Time Gross Settlement) differs from BEFTN because RTGS...",opts:["Processes cheques in batches overnight","Settles high-value transactions instantly and individually in real time","Is used only for government salary disbursements","Requires a minimum of 3 working days for settlement"],ans:1,exp:"RTGS = immediate, individual, real-time settlement for HIGH-VALUE transfers. BEFTN = batch processing for regular electronic transfers (salaries, vendor payments). RTGS has no waiting period; BEFTN batches transactions."},
+    {q:"[MODULE H] According to Bangladesh Bank's Note Refund Regulations, a mutilated banknote with 65% of its original area intact receives...",opts:["Full face value refund","Proportionate value based on remaining area","No refund at all","Refund only if the serial number is visible"],ans:1,exp:"65% falls in the 50%–90% bracket → PROPORTIONATE VALUE refund. Rules: >90% = full value; 50–90% = proportionate value; <50% = no refund. The 100-note bundles go to Bangladesh Bank stamped 'Defective Notes'."},
+    {q:"[MODULE I] The minimum Cash Reserve Ratio (CRR) that all scheduled banks must maintain with Bangladesh Bank is...",opts:["At least 5.5% of demand and time liabilities","At least 8% of demand and time liabilities","At least 13% of demand and time liabilities","At least 20% of demand and time liabilities"],ans:0,exp:"CRR minimum = 5.5% (cash kept with BB). SLR minimum = 13% (cash/gold/approved securities held by the bank itself). Both are calculated on total demand and time liabilities. CRR controls money supply; SLR ensures liquidity."},
+    {q:"[MODULE I] Under the Artho Rin Adalat Ain 2003, before filing a loan recovery case the bank must give the borrower written notice of at least...",opts:["7 days","15 days","30 days","60 days"],ans:1,exp:"Section 12: the bank must serve a formal written notice demanding repayment with a MINIMUM of 15 days' notice before it can file a case in the Artho Rin Adalat (Money Loan Court)."},
+    {q:"[MODULE J] A contract obtained through fraud is legally classified as...",opts:["Void — automatically invalid from the beginning","Voidable — only the aggrieved party can choose to cancel it","Illegal — both parties are subject to criminal prosecution","Valid — fraud does not affect the legal enforceability of contracts"],ans:1,exp:"Fraud makes a contract VOIDABLE, not void. The AGGRIEVED party alone has the right to void it. If they choose to continue, the contract stands. MISTAKE (Sec 20–22) makes a contract VOID — the key distinction in contract law."}
   ]
 ];
 
-// ═══════════════════════════════════════════════════════
-// STATE MANAGEMENT (localStorage for persistence)
-// ═══════════════════════════════════════════════════════
 const STORAGE_KEY = 'lpgb_study_state_v2';
+let state = {currentTab:0,completedTabs:[],quizScores:{},streak:0,lastStudied:null};
 
-let state = {
-  currentTab: 0,
-  completedTabs: [],
-  quizScores: {},
-  streak: 0,
-  lastStudied: null
-};
+function loadState(){try{const s=localStorage.getItem(STORAGE_KEY);if(s){const p=JSON.parse(s);state={...state,...p};}}catch(e){}}
+function saveState(){try{state.lastStudied=new Date().toISOString();localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}}
 
-function loadState() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      state = { ...state, ...parsed };
-    }
-  } catch(e) { /* ignore */ }
+function goTab(idx){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const panel=document.getElementById('panel-'+idx);
+  if(panel){panel.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+  const btn=document.getElementById('tab-btn-'+idx);
+  if(btn){btn.classList.add('active');btn.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});}
+  state.currentTab=idx;saveState();updateUI();
 }
 
-function saveState() {
-  try {
-    state.lastStudied = new Date().toISOString();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch(e) { /* ignore */ }
-}
-
-// ═══════════════════════════════════════════════════════
-// TAB NAVIGATION
-// ═══════════════════════════════════════════════════════
-function goTab(idx) {
-  // Hide all panels
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  
-  // Show target panel
-  const panel = document.getElementById('panel-' + idx);
-  if (panel) {
-    panel.classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-  
-  // Activate button
-  const btn = document.getElementById('tab-btn-' + idx);
-  if (btn) {
-    btn.classList.add('active');
-    // Scroll tab nav to show active button
-    btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-  }
-  
-  state.currentTab = idx;
-  saveState();
-  updateUI();
-}
-
-// ═══════════════════════════════════════════════════════
-// UI UPDATES
-// ═══════════════════════════════════════════════════════
-function updateUI() {
-  const done = state.completedTabs.length;
-  const total = 13;
-  const pct = Math.round((done / total) * 100);
-  
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressPct').textContent = pct + '%';
-  document.getElementById('tabCounter').textContent = done + ' / ' + total + ' done';
-  document.getElementById('streakBadge').textContent = '🔥 ' + (state.streak || 0) + ' streak';
-  
-  // Update tab buttons
-  for (let i = 0; i < total; i++) {
-    const btn = document.getElementById('tab-btn-' + i);
-    if (btn) {
-      if (state.completedTabs.includes(i)) {
-        btn.classList.add('done');
-      } else {
-        btn.classList.remove('done');
-      }
-    }
-  }
-  
-  // Update quiz trigger buttons
-  for (let i = 0; i < total; i++) {
-    const panel = document.getElementById('panel-' + i);
-    if (!panel) continue;
-    const triggerDiv = document.getElementById('quiz-trigger-' + i);
-    if (!triggerDiv) continue;
-    
-    if (state.completedTabs.includes(i)) {
-      // Show completion banner before quiz trigger
-      const existingBanner = panel.querySelector('.complete-banner');
-      if (!existingBanner) {
-        const banner = document.createElement('div');
-        banner.className = 'complete-banner';
-        banner.innerHTML = `<div class="complete-banner-icon">✅</div><div class="complete-banner-text"><h4>Module Complete!</h4><p>You passed the quiz for this module. Score: ${state.quizScores[i] || 0}/5</p></div>`;
-        triggerDiv.parentNode.insertBefore(banner, triggerDiv);
-      }
-      const btn = triggerDiv.querySelector('.quiz-trigger-btn');
-      if (btn) {
-        btn.textContent = '✅ Completed — Retake Quiz';
-        btn.classList.add('passed');
-      }
+function updateUI(){
+  const done=state.completedTabs.length,total=13,pct=Math.round((done/total)*100);
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('progressPct').textContent=pct+'%';
+  document.getElementById('tabCounter').textContent=done+' / '+total+' done';
+  document.getElementById('streakBadge').textContent='🔥 '+(state.streak||0)+' streak';
+  for(let i=0;i<total;i++){const btn=document.getElementById('tab-btn-'+i);if(btn){if(state.completedTabs.includes(i)){btn.classList.add('done');}else{btn.classList.remove('done');}}}
+  for(let i=0;i<total;i++){
+    const panel=document.getElementById('panel-'+i);if(!panel)continue;
+    const triggerDiv=document.getElementById('quiz-trigger-'+i);if(!triggerDiv)continue;
+    if(state.completedTabs.includes(i)){
+      const existingBanner=panel.querySelector('.complete-banner');
+      if(!existingBanner){const total=(quizData[i]||[]).length||5;const banner=document.createElement('div');banner.className='complete-banner';banner.innerHTML=`<div class="complete-banner-icon">✅</div><div class="complete-banner-text"><h4>Module Complete!</h4><p>You passed the quiz for this module. Score: ${state.quizScores[i]||0}/${total}</p></div>`;triggerDiv.parentNode.insertBefore(banner,triggerDiv);}
+      const btn=triggerDiv.querySelector('.quiz-trigger-btn');if(btn){btn.textContent='✅ Completed — Retake Quiz';btn.classList.add('passed');}
     }
   }
 }
 
-// ═══════════════════════════════════════════════════════
-// QUIZ ENGINE
-// ═══════════════════════════════════════════════════════
-let activeQuiz = null;
-
-function openQuiz(tabIdx) {
-  const quizEl = document.getElementById('quiz-' + tabIdx);
-  if (!quizEl) return;
-  
-  quizEl.classList.add('open');
-  quizEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  
-  activeQuiz = {
-    tabIdx,
-    questions: quizData[tabIdx] || [],
-    currentQ: 0,
-    score: 0,
-    answered: []
-  };
-  
+let activeQuiz=null;
+function openQuiz(tabIdx){
+  const quizEl=document.getElementById('quiz-'+tabIdx);if(!quizEl)return;
+  quizEl.classList.add('open');quizEl.scrollIntoView({behavior:'smooth',block:'start'});
+  activeQuiz={tabIdx,questions:quizData[tabIdx]||[],currentQ:0,score:0,answered:[]};
   renderQuestion(tabIdx);
 }
 
-function renderQuestion(tabIdx) {
-  const q = activeQuiz;
-  const quizEl = document.getElementById('quiz-' + tabIdx);
-  if (!q || !quizEl) return;
-  
-  if (q.currentQ >= q.questions.length) {
-    renderResults(tabIdx);
-    return;
-  }
-  
-  const question = q.questions[q.currentQ];
-  const dots = q.questions.map((_, i) => {
-    let cls = 'q-dot';
-    if (i === q.currentQ) cls += ' active';
-    else if (q.answered[i] !== undefined) {
-      cls += q.answered[i] ? ' correct' : ' wrong';
-    }
-    return `<div class="${cls}"></div>`;
-  }).join('');
-  
-  const opts = question.opts.map((opt, i) => 
-    `<button class="option-btn" onclick="selectAnswer(${tabIdx},${i})" id="opt-${tabIdx}-${i}">
-      <span class="option-letter">${String.fromCharCode(65+i)}</span>
-      ${opt}
-    </button>`
-  ).join('');
-  
-  quizEl.innerHTML = `
-    <div class="quiz-header">
-      <div class="quiz-title">📝 Module Quiz</div>
-      <div class="quiz-progress-dots">${dots}</div>
-    </div>
-    <div class="question-card">
-      <div class="q-num">QUESTION ${q.currentQ + 1} OF ${q.questions.length}</div>
-      <div class="q-text">${question.q}</div>
-      <div class="options">${opts}</div>
-      <div id="q-feedback-${tabIdx}" style="display:none" class="q-feedback"></div>
-      <button class="quiz-next-btn" id="quiz-next-${tabIdx}" onclick="nextQuestion(${tabIdx})">
-        ${q.currentQ < q.questions.length - 1 ? 'Next Question →' : 'See Results →'}
-      </button>
-    </div>
-  `;
+function renderQuestion(tabIdx){
+  const q=activeQuiz,quizEl=document.getElementById('quiz-'+tabIdx);if(!q||!quizEl)return;
+  if(q.currentQ>=q.questions.length){renderResults(tabIdx);return;}
+  const question=q.questions[q.currentQ];
+  const dots=q.questions.map((_,i)=>{let cls='q-dot';if(i===q.currentQ)cls+=' active';else if(q.answered[i]!==undefined){cls+=q.answered[i]?' correct':' wrong';}return`<div class="${cls}"></div>`;}).join('');
+  const opts=question.opts.map((opt,i)=>`<button class="option-btn" onclick="selectAnswer(${tabIdx},${i})" id="opt-${tabIdx}-${i}"><span class="option-letter">${String.fromCharCode(65+i)}</span>${opt}</button>`).join('');
+  quizEl.innerHTML=`<div class="quiz-header"><div class="quiz-title">${tabIdx===12?'🏆 Final Exam':'📝 Module Quiz'}</div><div class="quiz-progress-dots">${dots}</div></div><div class="question-card"><div class="q-num">QUESTION ${q.currentQ+1} OF ${q.questions.length}</div><div class="q-text">${question.q}</div><div class="options">${opts}</div><div id="q-feedback-${tabIdx}" style="display:none" class="q-feedback"></div><button class="quiz-next-btn" id="quiz-next-${tabIdx}" onclick="nextQuestion(${tabIdx})">${q.currentQ<q.questions.length-1?'Next Question →':'See Results →'}</button></div>`;
 }
 
-function selectAnswer(tabIdx, selectedIdx) {
-  const q = activeQuiz;
-  if (!q || q.answered[q.currentQ] !== undefined) return; // already answered
-  
-  const question = q.questions[q.currentQ];
-  const correct = question.ans;
-  const isCorrect = selectedIdx === correct;
-  
-  q.answered[q.currentQ] = isCorrect;
-  if (isCorrect) q.score++;
-  
-  // Highlight options
-  for (let i = 0; i < question.opts.length; i++) {
-    const btn = document.getElementById(`opt-${tabIdx}-${i}`);
-    if (!btn) continue;
-    btn.disabled = true;
-    if (i === correct) btn.classList.add('correct');
-    if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
-    if (i === correct && !isCorrect) btn.classList.add('reveal');
-    // update option letter
-    const letter = btn.querySelector('.option-letter');
-    if (i === correct) letter.style.background = 'rgba(126,232,162,.3)';
-    if (i === selectedIdx && !isCorrect) letter.style.background = 'rgba(249,124,110,.3)';
+function selectAnswer(tabIdx,selectedIdx){
+  const q=activeQuiz;if(!q||q.answered[q.currentQ]!==undefined)return;
+  const question=q.questions[q.currentQ],correct=question.ans,isCorrect=selectedIdx===correct;
+  q.answered[q.currentQ]=isCorrect;if(isCorrect)q.score++;
+  for(let i=0;i<question.opts.length;i++){
+    const btn=document.getElementById(`opt-${tabIdx}-${i}`);if(!btn)continue;
+    btn.disabled=true;
+    if(i===correct)btn.classList.add('correct');
+    if(i===selectedIdx&&!isCorrect)btn.classList.add('wrong');
+    if(i===correct&&!isCorrect)btn.classList.add('reveal');
+    const letter=btn.querySelector('.option-letter');
+    if(i===correct)letter.style.background='rgba(126,232,162,.3)';
+    if(i===selectedIdx&&!isCorrect)letter.style.background='rgba(249,124,110,.3)';
   }
-  
-  // Show feedback
-  const fb = document.getElementById(`q-feedback-${tabIdx}`);
-  if (fb) {
-    fb.style.display = 'block';
-    fb.className = 'q-feedback ' + (isCorrect ? 'correct-fb' : 'wrong-fb');
-    fb.innerHTML = `<strong>${isCorrect ? '✅ Correct!' : '❌ Not quite.'}</strong> ${question.exp}`;
-  }
-  
-  // Show next button
-  const nextBtn = document.getElementById(`quiz-next-${tabIdx}`);
-  if (nextBtn) nextBtn.classList.add('show');
-  
-  // Re-render dots
-  const quizEl = document.getElementById('quiz-' + tabIdx);
-  const dotsEl = quizEl ? quizEl.querySelector('.quiz-progress-dots') : null;
-  if (dotsEl) {
-    dotsEl.innerHTML = q.questions.map((_, i) => {
-      let cls = 'q-dot';
-      if (i === q.currentQ) cls += ' active';
-      else if (q.answered[i] !== undefined) cls += q.answered[i] ? ' correct' : ' wrong';
-      return `<div class="${cls}"></div>`;
-    }).join('');
-  }
+  const fb=document.getElementById(`q-feedback-${tabIdx}`);
+  if(fb){fb.style.display='block';fb.className='q-feedback '+(isCorrect?'correct-fb':'wrong-fb');fb.innerHTML=`<strong>${isCorrect?'✅ Correct!':'❌ Not quite.'}</strong> ${question.exp}`;}
+  const nextBtn=document.getElementById(`quiz-next-${tabIdx}`);if(nextBtn)nextBtn.classList.add('show');
+  const quizEl=document.getElementById('quiz-'+tabIdx);
+  const dotsEl=quizEl?quizEl.querySelector('.quiz-progress-dots'):null;
+  if(dotsEl){dotsEl.innerHTML=q.questions.map((_,i)=>{let cls='q-dot';if(i===q.currentQ)cls+=' active';else if(q.answered[i]!==undefined)cls+=q.answered[i]?' correct':' wrong';return`<div class="${cls}"></div>`;}).join('');}
 }
 
-function nextQuestion(tabIdx) {
-  activeQuiz.currentQ++;
-  renderQuestion(tabIdx);
-}
+function nextQuestion(tabIdx){activeQuiz.currentQ++;renderQuestion(tabIdx);}
 
-function renderResults(tabIdx) {
-  const q = activeQuiz;
-  const total = q.questions.length;
-  const score = q.score;
-  const passed = score >= Math.ceil(total * 0.6);
-  const pct = Math.round((score / total) * 100);
-  
-  const quizEl = document.getElementById('quiz-' + tabIdx);
-  
-  let emoji, msg, sub;
-  if (pct === 100) { emoji = '🏆'; msg = 'Perfect Score!'; sub = 'Outstanding! You have mastered this module.'; }
-  else if (pct >= 80) { emoji = '🌟'; msg = 'Excellent!'; sub = 'Great understanding of this module.'; }
-  else if (passed) { emoji = '✅'; msg = 'Module Passed!'; sub = 'Good work! Module marked as complete.'; }
-  else { emoji = '📚'; msg = 'Almost There!'; sub = `You need ${Math.ceil(total*0.6)}/${total} to pass. Review and try again!`; }
-  
-  if (passed) {
-    if (!state.completedTabs.includes(tabIdx)) {
-      state.completedTabs.push(tabIdx);
-      state.streak = (state.streak || 0) + 1;
-      saveState();
-      updateUI();
-      showAchievement('MODULE COMPLETE', getModuleName(tabIdx) + ' ✓', '🏅');
-    }
-    state.quizScores[tabIdx] = score;
-    saveState();
+function renderResults(tabIdx){
+  const q=activeQuiz,total=q.questions.length,score=q.score,passed=score>=Math.ceil(total*0.6),pct=Math.round((score/total)*100);
+  const quizEl=document.getElementById('quiz-'+tabIdx);
+  let emoji,msg,sub;
+  if(pct===100){emoji='🏆';msg='Perfect Score!';sub='Outstanding! You have mastered this module.';}
+  else if(pct>=80){emoji='🌟';msg='Excellent!';sub='Great understanding of this module.';}
+  else if(passed){emoji='✅';msg='Module Passed!';sub='Good work! Module marked as complete.';}
+  else{emoji='📚';msg='Almost There!';sub=`You need ${Math.ceil(total*0.6)}/${total} to pass. Review and try again!`;}
+  if(passed){
+    if(!state.completedTabs.includes(tabIdx)){state.completedTabs.push(tabIdx);state.streak=(state.streak||0)+1;saveState();updateUI();showAchievement('MODULE COMPLETE',getModuleName(tabIdx)+' ✓','🏅');}
+    state.quizScores[tabIdx]=score;saveState();
   }
-  
-  quizEl.innerHTML = `
-    <div class="results-card">
-      <div class="results-emoji">${emoji}</div>
-      <div class="results-score ${passed ? 'pass' : 'fail'}">${score}/${total}</div>
-      <div class="results-msg">${msg}</div>
-      <div class="results-sub">${sub}</div>
-      <div class="results-actions">
-        <button class="res-btn" onclick="openQuiz(${tabIdx})">🔄 Retake Quiz</button>
-        ${passed && tabIdx < 12 ? `<button class="res-btn primary" onclick="goTab(${tabIdx+1})">Next Module →</button>` : ''}
-        ${passed && tabIdx === 12 ? `<button class="res-btn primary" onclick="goTab(0)">🎉 Review All</button>` : ''}
-      </div>
-    </div>
-  `;
-  
-  if (state.completedTabs.length === 13) {
-    setTimeout(() => showAchievement('ALL COMPLETE', 'LPGB Champion! 🎓', '🎉'), 1000);
-  }
+  quizEl.innerHTML=`<div class="results-card"><div class="results-emoji">${emoji}</div><div class="results-score ${passed?'pass':'fail'}">${score}/${total}</div><div class="results-msg">${msg}</div><div class="results-sub">${sub}</div><div class="results-actions"><button class="res-btn" onclick="openQuiz(${tabIdx})">🔄 Retake Quiz</button>${passed&&tabIdx<12?`<button class="res-btn primary" onclick="goTab(${tabIdx+1})">Next Module →</button>`:''}${passed&&tabIdx===12?`<button class="res-btn primary" onclick="goTab(0)">🎉 Review All</button>`:''}</div></div>`;
+  if(state.completedTabs.length===13){setTimeout(()=>showAchievement('ALL COMPLETE','LPGB Champion! 🎓','🎉'),1000);}
 }
 
-// ═══════════════════════════════════════════════════════
-// ACHIEVEMENT POPUP
-// ═══════════════════════════════════════════════════════
-function showAchievement(label, title, icon) {
-  const el = document.getElementById('achievementPopup');
-  document.getElementById('achIcon').textContent = icon;
-  document.getElementById('achLabel').textContent = label;
-  document.getElementById('achTitle').textContent = title;
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 3500);
+function showAchievement(label,title,icon){
+  const el=document.getElementById('achievementPopup');
+  document.getElementById('achIcon').textContent=icon;
+  document.getElementById('achLabel').textContent=label;
+  document.getElementById('achTitle').textContent=title;
+  el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3500);
 }
 
-function getModuleName(idx) {
-  const names = ['Core Concepts','Banking Types','Banker–Customer','Accounts','KYC/AML','Negotiable Instruments','Foreign Exchange','Digital Banking','Cash Management','Bank Operations','Banking Laws','Company Law','Quick Revision'];
-  return names[idx] || 'Module';
+function getModuleName(idx){
+  const names=['Core Concepts','Banking Types','Banker–Customer','Accounts','KYC/AML','Negotiable Instruments','Foreign Exchange','Digital Banking','Cash Management','Bank Operations','Banking Laws','Company Law','Quick Revision'];
+  return names[idx]||'Module';
 }
 
-// ═══════════════════════════════════════════════════════
-// INIT — Resume from where user left off
-// ═══════════════════════════════════════════════════════
-window.addEventListener('DOMContentLoaded', () => {
-  loadState();
-  updateUI();
-  
-  // Resume from last tab
-  const resumeTab = state.currentTab || 0;
+window.addEventListener('DOMContentLoaded',()=>{
+  loadState();updateUI();
+  const resumeTab=state.currentTab||0;
   goTab(resumeTab);
-  
-  // Show welcome back if returning user
-  if (state.completedTabs.length > 0) {
-    const pct = Math.round((state.completedTabs.length / 13) * 100);
-    setTimeout(() => {
-      showAchievement('WELCOME BACK', `Resuming Tab ${resumeTab + 1} • ${pct}% done`, '📖');
-    }, 600);
+  if(state.completedTabs.length>0){
+    const pct=Math.round((state.completedTabs.length/13)*100);
+    setTimeout(()=>{showAchievement('WELCOME BACK',`Resuming Tab ${resumeTab+1} • ${pct}% done`,'📖');},600);
   }
 });
-
-// Prevent browser back-to-top on hash navigation
-window.addEventListener('popstate', () => {});
 </script>
 </body>
 </html>
